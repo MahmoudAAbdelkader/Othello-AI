@@ -193,35 +193,3 @@ class ReversiBoard:
 #                                   The following code is used to test the board class.                                                                                    #
 ############################################################################################################################################################################
 
-from random import randint
-
-#Testing the __init__ method
-myBoard = ReversiBoard()
-
-myBoard.print()
-print()
-
-#Testing Alternating moves between two players
-for i in range(10):
-
-    #Testing the getValidMoves method
-    validMoves = myBoard.getValidMoves("B")
-    print(validMoves)
-
-    move = randint(0,len(validMoves)-1)
-    
-    #Testing the makeMove method
-    myBoard.makeMove("B",validMoves[move][0],validMoves[move][1])
-    myBoard.print()
-    print()
-
-    #Testing the getValidMoves method for the other player
-    validMoves = myBoard.getValidMoves("W")
-    print(validMoves)
-
-    move = randint(0,len(validMoves)-1)
-
-    #Testing the makeMove method for the other player
-    myBoard.makeMove("W",validMoves[move][0],validMoves[move][1])
-    myBoard.print()
-    print()
