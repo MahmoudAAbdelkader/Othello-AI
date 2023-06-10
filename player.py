@@ -22,7 +22,8 @@ class AIPlayer(Player):
         return (0, 0)  # Return a dummy move for now
 
 
-# class HumanPlayer(Player):
+class HumanPlayer(Player):
+    pass
 #     def get_input(self):
 #         for event in pygame.event.get():
 #             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
