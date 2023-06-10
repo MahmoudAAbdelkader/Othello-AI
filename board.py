@@ -251,6 +251,15 @@ class ReversiBoard:
     # This method is used to get the color of the player whose turn it is.
     def getWhoseTurn(self):
         return self.whoseTurn
+
+    def getOpponent(self,player):
+        return "W" if player == "B" else "B"
+    
+    def getCopy(self):
+        #create new object
+        reversedBoard = ReversiBoard()
+        reversedBoard.board = deepcopy(self.board)
+        return reversedBoard
     
     
                     
