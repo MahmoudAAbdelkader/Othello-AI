@@ -1,3 +1,4 @@
+import random
 import pygame
 import sys
 import cell
@@ -141,42 +142,66 @@ class GameUI:
         if self.reversi.whoseTurn == 'W' or self.reversi.whoseTurn == 'B':
             self.board.set_valid_moves(self.reversi.getValidMoves(self.current_player))
         self.draw_board()
+        # Update the display
+        self.statusbar_message()
+        pygame.display.flip()
 
-    def handle_mouse_click_pva(self, event):
-        x, y = event.pos
-        col = x // self.square_size
-        row = y // self.square_size
-        if not(0 <= row < 8 and 0 <= col < 8):
-            print("Invalid move")
-        elif self.board.get_piece(row, col) == 'V':
-            Board.BOARD[row][col] = self.current_player
-            # sending the move to the reversi engine
-            self.reversi.makeMove(self.current_player, row, col)
+    # def handle_mouse_click_pva(self, event):
+    #     x, y = event.pos
+    #     col = x // self.square_size
+    #     row = y // self.square_size
+    #     if not(0 <= row < 8 and 0 <= col < 8):
+    #         print("Invalid move")
+    #     elif self.board.get_piece(row, col) == 'V':
+    #         Board.BOARD[row][col] = self.current_player
+    #         # sending the move to the reversi engine
+    #         self.reversi.makeMove(self.current_player, row, col)
 
-        self.current_player = self.reversi.whoseTurn
+    #     self.current_player = self.reversi.whoseTurn
 
 
 
-        self.player1.makeAMove()
+    #     self.player1.makeAMove()
 
-        self.current_player = self.reversi.whoseTurn
+    #     self.current_player = self.reversi.whoseTurn
 
-        # checking the buttons
-        if (row == 8) and (col == 0):
-            # home button
-            self.start()
+    #     # checking the buttons
+    #     if (row == 8) and (col == 0):
+    #         # home button
+    #         self.start()
 
-        if (row == 9) and (col == 0):
-            # restart button
-            self.start_game()
+    #     if (row == 9) and (col == 0):
+    #         # restart button
+    #         self.start_game()
 
-        # Updating the whole board
-        self.board.set_board(self.reversi.getBoard())
-        if self.reversi.whoseTurn == 'W' or self.reversi.whoseTurn == 'B':
-            self.board.set_valid_moves(self.reversi.getValidMoves(self.current_player))
-        self.draw_board()
+    #     # Updating the whole board
+    #     self.board.set_board(self.reversi.getBoard())
+    #     if self.reversi.whoseTurn == 'W' or self.reversi.whoseTurn == 'B':
+    #         self.board.set_valid_moves(self.reversi.getValidMoves(self.current_player))
+    #     self.draw_board()
 
-    # The main PVP game loop
+    def dummy_ai_move(self):
+        # update the display
+        pygame.display.flip()
+
+        
+        ai_valid_moves = self.reversi.getValidMoves(self.current_player)
+        if len(ai_valid_moves) > 0:
+            move = random.choice(ai_valid_moves)
+            self.reversi.makeMove(self.current_player, move[0], move[1])
+            self.current_player = self.reversi.whoseTurn
+        
+
+            # Updating the whole board
+            self.board.set_board(self.reversi.getBoard())
+            if self.reversi.whoseTurn == 'W' or self.reversi.whoseTurn == 'B':
+                self.board.set_valid_moves(self.reversi.getValidMoves(self.current_player))
+            self.draw_board()
+
+    # The main game loop for each game mode
+    # mode: PVP, PVA, AVA
+    # if the current player is AI, call the dummy_ai_move function THAT NEEDS TO BE CHANGED
+    # if the current player is human, wait for the mouse click
     def run(self, mode):
         # game loop
         while True:
@@ -187,6 +212,15 @@ class GameUI:
             
             # update the display
             pygame.display.flip()
+
+            # Update the current player
+            self.current_player = self.reversi.whoseTurn
+
+            # If it's AI's turn, call the dummy_ai_move function
+            if not(self.reversi.isGameOver()):
+                if (mode == "PVA" and self.current_player == "W") or mode == "AVA":
+                    self.dummy_ai_move() 
+                    continue
 
             # Handle events
             for event in pygame.event.get():
@@ -211,11 +245,15 @@ class GameUI:
                         self.start_game()
                     if mode == 'PVP':
                         self.handle_mouse_click_pvp(event)
+                        continue
                     elif mode == 'PVA':
-                        pass
+                        if self.current_player == "B":
+                            self.handle_mouse_click_pvp(event)
+                            continue
                     elif mode == 'AVA':
                         pass
             
+              
             self.clock.tick(60)
 
     # the main AVA game loop
@@ -223,6 +261,9 @@ class GameUI:
         pass
 
     def start(self):
+        # Reset the game mode to default
+        self.game_mode = "VS Player"
+        self.difficulty = "easy"
         # Update the screen
         pygame.display.set_caption("Othello")
         main_menu = MainMenu(self)
