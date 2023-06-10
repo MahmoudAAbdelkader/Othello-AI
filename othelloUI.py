@@ -178,9 +178,6 @@ class GameUI:
             # update the display
             pygame.display.flip()
 
-
-
-
             # Handle events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -190,29 +187,28 @@ class GameUI:
                     x, y = event.pos
                     col = x // self.square_size
                     row = y // self.square_size
-                    if 0 <= row < 8 and 0 <= col < 8:
-                        if self.board.get_piece(row, col) == 'V':
-                            self.board.board[row][col] = self.current_player
+                    if not(0 <= row < 8 and 0 <= col < 8):
+                        print("Invalid move")
+                    if self.board.get_piece(row, col) == 'V':
+                        self.board.board[row][col] = self.current_player
 
 
-                            # sending the move to the reversi engine
-                            self.reversi.makeMove(self.current_player, row, col)
+                    # sending the move to the reversi engine
+                    self.reversi.makeMove(self.current_player, row, col)
 
 
-                            pygame.display.flip()
-                            if self.current_player == self.player1.get_color():
-                                self.current_player = self.player2.get_color()
-                            else:
-                                self.current_player = self.player1.get_color()
+                    pygame.display.flip()
+                    if self.current_player == self.player1.get_color():
+                        self.current_player = self.player2.get_color()
+                    else:
+                        self.current_player = self.player1.get_color()
 
-                            
-                            # Updating the whole board
-                            self.board.set_board(self.reversi.getBoard())
-                            self.board.set_valid_moves(self.reversi.getValidMoves(self.current_player))
+                    # Updating the whole board
+                    self.board.set_board(self.reversi.getBoard())
+                    self.board.set_valid_moves(self.reversi.getValidMoves(self.current_player))
 
-                            self.draw_board()
-
-                            
+                    self.draw_board()
+    
             self.clock.tick(60)
 
     def start(self):
