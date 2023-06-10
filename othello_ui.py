@@ -99,12 +99,6 @@ class GameUI:
             for col in range(8):
                 new_cell = cell.Cell(row, col, self.board.get_piece(row, col))
                 new_cell.draw(self.screen, self.square_size)
-    
-    def toggle_player(self):
-        if self.current_player == "W":
-            self.current_player = "B"
-        else:
-            self.current_player = "W"
 
     def update_ingame_dimensions(self, event):
         # Update the window dimensions while maintaining the aspect ratio
@@ -130,9 +124,7 @@ class GameUI:
             # sending the move to the reversi engine
             self.reversi.makeMove(self.current_player, row, col)
 
-            # toggle from player1 to player2 and vice versa
-            self.toggle_player()
-
+        self.current_player = self.reversi.whoseTurn
         # checking the buttons
         if (row == 8) and (col == 0):
             # home button
@@ -151,10 +143,22 @@ class GameUI:
     def run_pvp(self):
         # game loop
         while True:
+
+            if(self.reversi.isGameOver()):
+                # add rectangle containing the winner
+                font = pygame.font.Font(None, int(23 * self.statusbar_height // 120 ))
+                message = font.render(
+                    f"Game Over! {self.reversi.getWinner()} wins!", True, BLACK)
+                message_rect = message.get_rect(
+                    center=(self.statusbar_width // 2, self.statusbar_height // 2))
+                self.statusbar.fill(pygame.Color('gray'))
+                self.statusbar.blit(message, message_rect)
+                pygame.display.flip()
+
             # show the status bar
             self.screen.blit(
                 self.statusbar, (0, self.screen_height - self.statusbar_height))
-            self.statusbar_message(self.current_player, self.player2.get_score(), self.player1.get_score())
+            self.statusbar_message(self.current_player, self.reversi.getScore('W'), self.reversi.getScore('B'))
             
             # update the display
             pygame.display.flip()
@@ -170,7 +174,7 @@ class GameUI:
 
                 elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     self.handle_mouse_click(event)
-    
+            
             self.clock.tick(60)
 
     # the main PVA game loop
@@ -211,7 +215,7 @@ class GameUI:
     def create_player(self, color, player_type):
         """Factory method to create a player object based on the given color and player type."""
         if player_type == 'human':
-            return HumanPlayer(color)
+            return HumanPlayer(color,self.reversi)
         elif player_type == 'ai':
             return AIPlayer(color)
 
