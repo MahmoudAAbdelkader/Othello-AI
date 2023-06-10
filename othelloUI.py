@@ -1,8 +1,8 @@
 import pygame
 import sys
-import pygame_menu
 from player import AIPlayer, HumanPlayer
 from reversi2 import ReversiBoard
+from mainmenu import MainMenu
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -104,6 +104,7 @@ class cell:
                                2, y + square_size // 2), square_size // 2 - 5, 1)
 
 
+
 ### GameUI Class ###
 class GameUI:
     def __init__(self):
@@ -147,37 +148,7 @@ class GameUI:
         self.statusbar.fill(pygame.Color('gray'))
         self.statusbar.blit(message, message_rect)
 
-    # Setting the main menu
-    def show_welcome_screen(self):
-        menu = pygame_menu.Menu(
-            'Welcome to othello',
-            self.screen_width,
-            self.screen_height,
-            theme=pygame_menu.themes.THEME_SOLARIZED)
-        # set menu font size
 
-        # Add game mode selection
-        menu.add.selector('Game Mode: ', [
-            ('Player VS Player', 'VS Player'),
-            ('Player VS AI', 'VS AI'),
-            ('AI VS AI', 'AI VS AI')],
-            onchange=self.set_game_mode,
-            font_size=18)
-
-        # Add difficulty selection
-        menu.add.selector('Difficulty: ', [('Easy', 'easy'), ('Medium', 'medium'), ('Hard', 'hard')],
-                          onchange=self.set_difficulty,
-                          font_size=18)
-
-        # Add start button
-        menu.add.button('Start', self.start_game,
-                        font_size=18)
-
-        # Add quit button
-        menu.add.button('Quit', pygame_menu.events.EXIT,
-                        font_size=18)
-
-        menu.mainloop(self.screen)
 
     def set_game_mode(self, value, game_mode):
         self.game_mode = game_mode
@@ -247,7 +218,8 @@ class GameUI:
     def start(self):
         # Update the screen
         pygame.display.set_caption("Othello")
-        self.show_welcome_screen()
+        main_menu = MainMenu(self)
+        main_menu.show_welcome_screen()
 
     def start_game(self):
         self.draw_board()
