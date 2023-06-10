@@ -1,7 +1,7 @@
 import pygame
 import sys
 from player import AIPlayer, HumanPlayer
-from reversi2 import ReversiBoard
+from reversi_2 import ReversiBoard
 from main_menu import MainMenu
 
 WHITE = (255, 255, 255)
