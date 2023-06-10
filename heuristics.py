@@ -32,16 +32,18 @@ board_static_weights = [
 
 
 class GameHeuristics():
+    # giving weights that will be used to calculate each heauristics according to the importance during playing
+    coinParity_weight = 0.05
+    mobility_weight = 0.35
+    stability_weight = 0.2
+    cornersCaptured_weight = 0.4
     def _init_(self):
-        #giving weights that will be used to calculate each heauristics according to the importance during playing
-        coinParity_weight = 0.05
-        mobility_weight = 0.35
-        stability_weight = 0.2
-        cornersCaptured_weight = 0.4
+       pass
 
-    def coinParity(self, board):
+    def coinParity(self, board, player):
         black_coins = 0
         white_coins = 0
+        coinParityValue = 0
         # getting the current board
         board_coins = board.getBoard()
 
@@ -55,25 +57,34 @@ class GameHeuristics():
 
         #Assume that the max player plays with white coins
         #the value returned is in range of -100 to 100
-        coinParityValue = 100 * ((white_coins - black_coins) / (white_coins + black_coins))
+        if(player == "W"):
+            coinParityValue = 100 * ((white_coins - black_coins) / (white_coins + black_coins))
+        elif(player == "B"):
+            coinParityValue = 100 * ((black_coins - white_coins) / (black_coins + white_coins))
+
 
         return coinParityValue
 
 
-    def mobility(self, board):
+    def mobility(self, board, player):
+        mobility_value = 0
         #counting the number of valid moves for each color
         white_actual_mobility = len(board.getValidMoves("W"))
         black_actual_mobility = len(board.getValidMoves("B"))
         if white_actual_mobility + black_actual_mobility == 0:
             mobility_value = 0
 
-        mobility_value = 100*(white_actual_mobility - black_actual_mobility)/(white_actual_mobility + black_actual_mobility)
+        if(player == "W"):
+            mobility_value = 100*(white_actual_mobility - black_actual_mobility)/(white_actual_mobility + black_actual_mobility)
+        elif (player == "B"):
+            mobility_value = 100*(black_actual_mobility - white_actual_mobility)/(black_actual_mobility + white_actual_mobility)
 
         return mobility_value
 
 
-  #method is used to calculate the heuristic value based on the corner captured.
-    def cornersCaptured(self):
+    #method is used to calculate the heuristic value based on the corner captured.
+    def cornersCaptured(self,board ,player):
+
         actual_corners_weight = 0.8
         potential_corners_weight = 0.2
         board_coins = self.board.getBoard()
@@ -105,7 +116,10 @@ class GameHeuristics():
 
 
         if white_actual_corners_count + black_actual_corners_count != 0:
-            actualcornersCaptured_value = 100 * (white_actual_corners_count - black_actual_corners_count) / (white_actual_corners_count + black_actual_corners_count)
+            if(player == "W"):
+                actualcornersCaptured_value = 100 * (white_actual_corners_count - black_actual_corners_count) / (white_actual_corners_count + black_actual_corners_count)
+            elif(player == "B"):
+                actualcornersCaptured_value = 100 * (black_actual_corners_count - white_actual_corners_count) / (black_actual_corners_count + white_actual_corners_count)
 
         potential_black_corners = 0
         potential_white_corners = 0
@@ -137,7 +151,10 @@ class GameHeuristics():
                 potential_black_corners += 1
 
         if white_actual_corners_count + black_actual_corners_count != 0:
-            potentailcornersCaptured_value = 100 * (potential_white_corners - potential_black_corners) / (potential_white_corners + potential_black_corners)
+            if(player == "W"):
+                potentailcornersCaptured_value = 100 * (potential_white_corners - potential_black_corners) / (potential_white_corners + potential_black_corners)
+            elif(player == "B"):
+                potentailcornersCaptured_value = 100 * (potential_black_corners - potential_white_corners) / (potential_black_corners + potential_white_corners)
 
         corners_value = 100 * (actual_corners_weight * actualcornersCaptured_value + potential_corners_weight * potentailcornersCaptured_value)
 
@@ -145,18 +162,19 @@ class GameHeuristics():
 
 
 
-    def stability(self):
+    def stability(self,board,player):
 
         print('in progress')
+        return 1
 
     #method to Compute a heuristic value for an Othello board state based on a combination of factors,
     #including piece count, mobility, stability, and corners captured.
-    def combinedHeuristics(self, board):
+    def combinedHeuristics(self, board,player):
 
-        coinParity_value = self.coinParity_weight * self.coinParity(board)
-        mobility_value = self.mobility_weight * self.mobility(board)
-        stability_value = self.stability_weight * self.stability(board)
-        cornersCaptured_value = self.cornersCaptured_weight * self.cornersCaptured(board)
+        coinParity_value = self.coinParity_weight * self.coinParity(board,player)
+        mobility_value = self.mobility_weight * self.mobility(board,player)
+        stability_value = self.stability_weight * self.stability(board,player)
+        cornersCaptured_value = self.cornersCaptured_weight * self.cornersCaptured(board,player)
 
         value = coinParity_value + mobility_value + stability_value + cornersCaptured_value
 
