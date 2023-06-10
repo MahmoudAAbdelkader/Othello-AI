@@ -134,14 +134,7 @@ class GameUI:
             self.reversi.makeMove(self.current_player, row, col)
 
         self.current_player = self.reversi.whoseTurn
-        # checking the buttons
-        if (row == 8) and (col == 0):
-            # home button
-            self.start()
-
-        if (row == 9) and (col == 0):
-            # restart button
-            self.start_game()
+        
 
         # Updating the whole board
         self.board.set_board(self.reversi.getBoard())
@@ -149,7 +142,7 @@ class GameUI:
             self.board.set_valid_moves(self.reversi.getValidMoves(self.current_player))
         self.draw_board()
 
-    def handle_mouse_click_pvp(self, event):
+    def handle_mouse_click_pva(self, event):
         x, y = event.pos
         col = x // self.square_size
         row = y // self.square_size
@@ -161,6 +154,13 @@ class GameUI:
             self.reversi.makeMove(self.current_player, row, col)
 
         self.current_player = self.reversi.whoseTurn
+
+
+
+        self.player1.makeAMove()
+
+        self.current_player = self.reversi.whoseTurn
+
         # checking the buttons
         if (row == 8) and (col == 0):
             # home button
@@ -196,13 +196,25 @@ class GameUI:
 
                 elif event.type == pygame.VIDEORESIZE:
                     self.update_ingame_dimensions(event)
+                
+                elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    # checking the buttons
+                    x, y = event.pos
+                    col = x // self.square_size
+                    row = y // self.square_size
+                    if (row == 8) and (col == 0):
+                        # home button
+                        self.start()
 
-                elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and mode == 'PVP':
-                    self.handle_mouse_click_pvp(event)
-                elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and mode == 'PVA':
-                    self.handle_mouse_click_pva(event)
-                elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and mode == 'AVA':
-                    pass
+                    if (row == 9) and (col == 0):
+                        # restart button
+                        self.start_game()
+                    if mode == 'PVP':
+                        self.handle_mouse_click_pvp(event)
+                    elif mode == 'PVA':
+                        pass
+                    elif mode == 'AVA':
+                        pass
             
             self.clock.tick(60)
 
@@ -242,11 +254,11 @@ class GameUI:
         elif self.game_mode == 'VS AI':
             self.player1 = self.create_player('B', 'human')
             self.player2 = self.create_player('W', 'ai')
-            self.run_pva()
+            self.run('PVA')
         else:
             self.player1 = self.create_player('B', 'ai')
             self.player2 = self.create_player('W', 'ai')
-            self.run_ava()
+            self.run('AVA')
 
         # Quit Pygame
         pygame.quit()
