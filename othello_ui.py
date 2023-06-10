@@ -65,8 +65,6 @@ class GameUI:
             center=(self.statusbar_width // 2, self.statusbar_height // 2))
         self.statusbar.fill(pygame.Color('gray'))
         self.statusbar.blit(message, message_rect)
-        
-
 
         # add a botton in most top left corner
         home_button = pygame.Rect(0, 0, self.square_size, self.square_size)
@@ -91,11 +89,9 @@ class GameUI:
 
     def set_game_mode(self, value, game_mode):
         self.game_mode = game_mode
-        print(self.game_mode)
 
     def set_difficulty(self, value, difficulty):
         self.difficulty = difficulty
-        print(self.difficulty)
 
     # Drawing the board
 
@@ -104,9 +100,56 @@ class GameUI:
             for col in range(8):
                 new_cell = cell.Cell(row, col, self.board.get_piece(row, col))
                 new_cell.draw(self.screen, self.square_size)
+    
+    def toggle_player(self):
+        if self.current_player == "W":
+            self.current_player = "B"
+        else:
+            self.current_player = "W"
 
-    # The main game loop
-    def run(self):
+    def update_ingame_dimensions(self, event):
+        # Update the window dimensions while maintaining the aspect ratio
+        window_width = event.w
+        window_width = round(window_width / 8) * 8
+        window_height = int(window_width / self.ASPECT_RATIO[0] * self.ASPECT_RATIO[1])
+        
+        self.screen = pygame.display.set_mode((window_width, window_height), pygame.RESIZABLE)
+        self.update_screen_dimensions(window_width, window_height)
+        self.draw_board()
+        self.statusbar = pygame.Surface(
+            (self.statusbar_width, self.statusbar_height))
+        self.statusbar.fill(pygame.Color('gray'))
+
+    def handle_mouse_click(self, event):
+        x, y = event.pos
+        col = x // self.square_size
+        row = y // self.square_size
+        if not(0 <= row < 8 and 0 <= col < 8):
+            print("Invalid move")
+        elif self.board.get_piece(row, col) == 'V':
+            Board.BOARD[row][col] = self.current_player
+            # sending the move to the reversi engine
+            self.reversi.makeMove(self.current_player, row, col)
+
+            # toggle from player1 to player2 and vice versa
+            self.toggle_player()
+
+        # checking the buttons
+        if (row == 8) and (col == 0):
+            # home button
+            self.start()
+
+        if (row == 9) and (col == 0):
+            # restart button
+            self.start_game()
+
+        # Updating the whole board
+        self.board.set_board(self.reversi.getBoard())
+        self.board.set_valid_moves(self.reversi.getValidMoves(self.current_player))
+        self.draw_board()
+
+    # The main PVP game loop
+    def run_pvp(self):
         # game loop
         while True:
             # show the status bar
@@ -124,53 +167,41 @@ class GameUI:
                     sys.exit()
 
                 elif event.type == pygame.VIDEORESIZE:
-                    # Update the window dimensions while maintaining the aspect ratio
-                    window_width = event.w
-                    window_width = round(window_width / 8) * 8
-                    window_height = int(window_width / self.ASPECT_RATIO[0] * self.ASPECT_RATIO[1])
-                    
-                    self.screen = pygame.display.set_mode((window_width, window_height), pygame.RESIZABLE)
-                    self.update_screen_dimensions(window_width, window_height)
-                    self.draw_board()
-                    self.statusbar = pygame.Surface(
-                        (self.statusbar_width, self.statusbar_height))
-                    self.statusbar.fill(pygame.Color('gray'))
-
+                    self.update_ingame_dimensions(event)
 
                 elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                    x, y = event.pos
-                    col = x // self.square_size
-                    row = y // self.square_size
-                    if not(0 <= row < 8 and 0 <= col < 8):
-                        print("Invalid move")
-                    elif self.board.get_piece(row, col) == 'V':
-                        Board.BOARD[row][col] = self.current_player
-                        # sending the move to the reversi engine
-                        self.reversi.makeMove(self.current_player, row, col)
-
-                        if self.current_player == self.player1.get_color():
-                            self.current_player = self.player2.get_color()
-                        else:
-                            self.current_player = self.player1.get_color()
-
-
-                    # checking the buttons
-                    if (row == 8) and (col == 0):
-                        # home button
-                        self.start()
-
-                    if (row == 9) and (col == 0):
-                        # restart button
-                        self.start_game()
-                    
-
-                    # Updating the whole board
-                    self.board.set_board(self.reversi.getBoard())
-                    self.board.set_valid_moves(self.reversi.getValidMoves(self.current_player))
-
-                    self.draw_board()
+                    self.handle_mouse_click(event)
     
             self.clock.tick(60)
+
+    # the main PVA game loop
+    def run_pva(self):
+        # game loop
+        while True:
+            # show the status bar
+            self.screen.blit(
+                self.statusbar, (0, self.screen_height - self.statusbar_height))
+            self.statusbar_message(self.current_player, self.player2.get_score(), self.player1.get_score())
+            
+            # update the display
+            pygame.display.flip()
+
+            # Handle events
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+                elif event.type == pygame.VIDEORESIZE:
+                    self.update_ingame_dimensions(event)
+
+                elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    pass
+
+
+    # the main AVA game loop
+    def run_ava(self):
+        pass
 
     def start(self):
         # Update the screen
@@ -189,26 +220,26 @@ class GameUI:
         """Starts the game with the selected game mode and players."""
         self.reversi.restart()
         self.board.reset_board()
+        self.board.set_valid_moves(self.reversi.getValidMoves('B'))
         self.draw_board()
-        print(self.board.BOARD)
         pygame.display.flip()
+
+        # Set current player to Black
+        self.current_player = 'B'
 
         # Create players based on game mode using the factory method
         if self.game_mode == 'VS Player':
             self.player1 = self.create_player('B', 'human')
             self.player2 = self.create_player('W', 'human')
+            self.run_pvp()
         elif self.game_mode == 'VS AI':
             self.player1 = self.create_player('B', 'human')
             self.player2 = self.create_player('W', 'ai')
+            self.run_pva()
         else:
             self.player1 = self.create_player('B', 'ai')
             self.player2 = self.create_player('W', 'ai')
-
-        # Set current player to player 1
-        self.current_player = self.player1.get_color()
-
-        # Run the game loop
-        self.run()
+            self.run_ava()
 
         # Quit Pygame
         pygame.quit()

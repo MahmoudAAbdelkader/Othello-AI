@@ -18,8 +18,11 @@ class Player:
     def get_color(self):
         return self.color
 
-    def switch_turn(self):
-        self.is_turn = not self.is_turn
+    # def switch_turn(self):
+    #     self.is_turn = not self.is_turn
+
+    # def is_my_turn(self):
+    #     return self.is_turn
 
 
 class AIPlayer(Player):
