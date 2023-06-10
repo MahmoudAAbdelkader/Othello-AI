@@ -150,7 +150,7 @@ class GameHeuristics():
             elif move == [7, 7]:
                 potential_black_corners += 1
 
-        if white_actual_corners_count + black_actual_corners_count != 0:
+        if potential_black_corners + potential_white_corners != 0:
             if(player == "W"):
                 potentailcornersCaptured_value = 100 * (potential_white_corners - potential_black_corners) / (potential_white_corners + potential_black_corners)
             elif(player == "B"):
