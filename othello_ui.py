@@ -119,7 +119,34 @@ class GameUI:
             (self.statusbar_width, self.statusbar_height))
         self.statusbar.fill(pygame.Color('gray'))
 
-    def handle_mouse_click(self, event):
+    def handle_mouse_click_pvp(self, event):
+        x, y = event.pos
+        col = x // self.square_size
+        row = y // self.square_size
+        if not(0 <= row < 8 and 0 <= col < 8):
+            print("Invalid move")
+        elif self.board.get_piece(row, col) == 'V':
+            Board.BOARD[row][col] = self.current_player
+            # sending the move to the reversi engine
+            self.reversi.makeMove(self.current_player, row, col)
+
+        self.current_player = self.reversi.whoseTurn
+        # checking the buttons
+        if (row == 8) and (col == 0):
+            # home button
+            self.start()
+
+        if (row == 9) and (col == 0):
+            # restart button
+            self.start_game()
+
+        # Updating the whole board
+        self.board.set_board(self.reversi.getBoard())
+        if self.reversi.whoseTurn == 'W' or self.reversi.whoseTurn == 'B':
+            self.board.set_valid_moves(self.reversi.getValidMoves(self.current_player))
+        self.draw_board()
+
+    def handle_mouse_click_pvp(self, event):
         x, y = event.pos
         col = x // self.square_size
         row = y // self.square_size
@@ -147,13 +174,9 @@ class GameUI:
         self.draw_board()
 
     # The main PVP game loop
-    def run_pvp(self):
+    def run(self, mode):
         # game loop
         while True:
-
-            if(self.reversi.isGameOver()):
-                self.statusbar_message()
-
             # show the status bar
             self.screen.blit(
                 self.statusbar, (0, self.screen_height - self.statusbar_height))
@@ -171,35 +194,14 @@ class GameUI:
                 elif event.type == pygame.VIDEORESIZE:
                     self.update_ingame_dimensions(event)
 
-                elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                    self.handle_mouse_click(event)
+                elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and mode == 'PVP':
+                    self.handle_mouse_click_pvp(event)
+                elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and mode == 'PVA':
+                    self.handle_mouse_click_pva(event)
+                elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and mode == 'AVA':
+                    pass
             
             self.clock.tick(60)
-
-    # the main PVA game loop
-    def run_pva(self):
-        # game loop
-        while True:
-            # show the status bar
-            self.screen.blit(
-                self.statusbar, (0, self.screen_height - self.statusbar_height))
-            self.statusbar_message(self.current_player, self.player2.get_score(), self.player1.get_score())
-            
-            # update the display
-            pygame.display.flip()
-
-            # Handle events
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-
-                elif event.type == pygame.VIDEORESIZE:
-                    self.update_ingame_dimensions(event)
-
-                elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                    pass
-
 
     # the main AVA game loop
     def run_ava(self):
@@ -214,9 +216,9 @@ class GameUI:
     def create_player(self, color, player_type):
         """Factory method to create a player object based on the given color and player type."""
         if player_type == 'human':
-            return HumanPlayer(color,self.reversi)
+            return HumanPlayer(color, self.reversi)
         elif player_type == 'ai':
-            return AIPlayer(color)
+            return AIPlayer(color, self.reversi, self.difficulty)
 
     def start_game(self):
         """Starts the game with the selected game mode and players."""
@@ -233,7 +235,7 @@ class GameUI:
         if self.game_mode == 'VS Player':
             self.player1 = self.create_player('B', 'human')
             self.player2 = self.create_player('W', 'human')
-            self.run_pvp()
+            self.run('PVP')
         elif self.game_mode == 'VS AI':
             self.player1 = self.create_player('B', 'human')
             self.player2 = self.create_player('W', 'ai')
