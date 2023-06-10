@@ -35,7 +35,8 @@ class Board:
         self.board = new_board
 
     def get_piece(self, row, col):
-        return self.board[row][col]
+        if row >= 0 and row < 8 and col >= 0 and col < 8:    
+            return self.board[row][col]
 
     def set_piece(self, row, col, piece):
         self.board[row][col] = piece
@@ -116,14 +117,19 @@ class GameUI:
         self.reversi = ReversiBoard()
 
         # Set up the display
-        self.square_size = 60
-        self.board_size = 8 * self.square_size
+        self.ASPECT_RATIO = (8,10)
+
+        # Initial size of the board & game window
+        self.screen_width = 480
+        self.screen_height = int(self.screen_width / self.ASPECT_RATIO[0] * self.ASPECT_RATIO[1])
+        self.square_size = self.screen_width // 8
+        self.board_size = self.screen_width
         self.statusbar_height = 2 * self.square_size
-        self.statusbar_width = self.board_size
-        self.screen_width = self.board_size
-        self.screen_height = self.board_size + self.statusbar_height
+        self.statusbar_width = self.screen_width
+        
+
         self.screen = pygame.display.set_mode(
-            (self.screen_width, self.screen_height))
+            (self.screen_width, self.screen_height), pygame.RESIZABLE)
         self.clock = pygame.time.Clock()
 
         # Set up the board
@@ -139,8 +145,17 @@ class GameUI:
         self.game_mode = "VS Player"
         self.difficulty = "easy"
 
+    def update_screen_dimensions(self, width, height):
+        self.screen_width = width
+        self.screen_height = int(self.screen_width / self.ASPECT_RATIO[0] * self.ASPECT_RATIO[1])
+        self.square_size = self.screen_width // 8
+        self.board_size = self.screen_width
+        self.statusbar_height = 2 * self.square_size
+        self.statusbar_width = self.screen_width
+
+    
     def statusbar_message(self, the_turn, white_score, black_score):
-        font = pygame.font.Font(None, 36)
+        font = pygame.font.Font(None, int(36 * self.statusbar_height // 120 ))
         message = font.render(
             f"{the_turn}'s turn | White: {white_score} | Black: {black_score}", True, BLACK)
         message_rect = message.get_rect(
@@ -183,25 +198,40 @@ class GameUI:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+
+                elif event.type == pygame.VIDEORESIZE:
+                    # Update the window dimensions while maintaining the aspect ratio
+                    window_width = event.w
+                    window_width = round(window_width / 8) * 8
+                    window_height = int(window_width / self.ASPECT_RATIO[0] * self.ASPECT_RATIO[1])
+                    
+                    self.screen = pygame.display.set_mode((window_width, window_height), pygame.RESIZABLE)
+                    self.update_screen_dimensions(window_width, window_height)
+                    self.draw_board()
+                    self.statusbar = pygame.Surface(
+                        (self.statusbar_width, self.statusbar_height))
+                    self.statusbar.fill(pygame.Color('gray'))
+
+
                 elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     x, y = event.pos
                     col = x // self.square_size
                     row = y // self.square_size
                     if not(0 <= row < 8 and 0 <= col < 8):
                         print("Invalid move")
-                    if self.board.get_piece(row, col) == 'V':
+                    elif self.board.get_piece(row, col) == 'V':
                         self.board.board[row][col] = self.current_player
+                        # sending the move to the reversi engine
+                        self.reversi.makeMove(self.current_player, row, col)
 
-
-                    # sending the move to the reversi engine
-                    self.reversi.makeMove(self.current_player, row, col)
-
+                        if self.current_player == self.player1.get_color():
+                            self.current_player = self.player2.get_color()
+                        else:
+                            self.current_player = self.player1.get_color()
 
                     pygame.display.flip()
-                    if self.current_player == self.player1.get_color():
-                        self.current_player = self.player2.get_color()
-                    else:
-                        self.current_player = self.player1.get_color()
+
+                    
 
                     # Updating the whole board
                     self.board.set_board(self.reversi.getBoard())
