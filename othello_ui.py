@@ -63,9 +63,12 @@ class GameUI:
             message = font.render(
                 f"{names[the_turn]}'s turn | White: {white_score} | Black: {black_score}", True, BLACK)
         else:
-            
-            message = font.render(
-                f"{names[self.reversi.getWinner()]} wins! | White: {white_score} | Black: {black_score}", True, BLACK)
+            if self.reversi.getWinner() == "Draw":
+                message = font.render(
+                    f"Game Over!\n{names[self.reversi.getWinner()]} | White: {white_score} | Black: {black_score}", True, BLACK)
+            else:
+                message = font.render(
+                    f"Game Over!\n{names[self.reversi.getWinner()]} Wins! | White: {white_score} | Black: {black_score}", True, BLACK)
             
         message_rect = message.get_rect(
             center=(self.statusbar_width // 2, self.statusbar_height // 2))
