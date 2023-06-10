@@ -1,8 +1,8 @@
 import pygame
 import sys
 import cell
-from player import AIPlayer, HumanPlayer
-from reversi_2 import ReversiBoard
+from backend.player import AIPlayer, HumanPlayer
+from backend.board import ReversiBoard
 from main_menu import MainMenu
 from front_board import Board
 
