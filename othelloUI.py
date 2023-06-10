@@ -244,23 +244,65 @@ class GameUI:
         main_menu = MainMenu(self)
         main_menu.show_welcome_screen()
 
+    def create_player(color, player_type):
+        """Factory method to create a player object based on the given color and player type."""
+        if player_type == 'human':
+            return HumanPlayer(color)
+        elif player_type == 'ai':
+            return AIPlayer(color)
+
     def start_game(self):
+        """Starts the game with the selected game mode and players."""
         self.draw_board()
         pygame.display.flip()
-        # Run the game loop
-        if self.game_mode == "VS AI":
-            # Set up the AI player
-            ai_player = AIPlayer('W')
-            # Run the game in VS AI mode
-            self.current_player = self.player1
-            self.run()
+
+        # Create players based on game mode using the factory method
+        if self.game_mode == 'VS Player':
+            self.player1 = self.create_player('B', 'human')
+            self.player2 = self.create_player('W', 'human')
+        elif self.game_mode == 'VS AI':
+            pass
+            # self.player1 = self.create_player('B', 'human')
+            # self.player2 = self.create_player('W', 'ai')
         else:
-            # Set up the human players
-            self.player1 = HumanPlayer('B')
-            self.player2 = HumanPlayer('W')
-            # Run the game in VS Player mode
-            self.current_player = self.player1.get_color()
-            self.run()
+            pass
+            # self.player1 = self.create_player('B', 'ai')
+            # self.player2 = self.create_player('W', 'ai')
+
+        # Set current player to player 1
+        self.current_player = self.player1.get_color()
+
+        # Run the game loop
+        self.run()
+
+    def create_player(self, color, player_type):
+        """Factory method to create a player object based on the given color and player type."""
+        if player_type == 'human':
+            return HumanPlayer(color)
+        elif player_type == 'ai':
+            return AIPlayer(color)
+
+    def start_game(self):
+        """Starts the game with the selected game mode and players."""
+        self.draw_board()
+        pygame.display.flip()
+
+        # Create players based on game mode using the factory method
+        if self.game_mode == 'VS Player':
+            self.player1 = self.create_player('B', 'human')
+            self.player2 = self.create_player('W', 'human')
+        elif self.game_mode == 'VS AI':
+            self.player1 = self.create_player('B', 'human')
+            self.player2 = self.create_player('W', 'ai')
+        else:
+            self.player1 = self.create_player('B', 'ai')
+            self.player2 = self.create_player('W', 'ai')
+
+        # Set current player to player 1
+        self.current_player = self.player1.get_color()
+
+        # Run the game loop
+        self.run()
 
         # Quit Pygame
         pygame.quit()
