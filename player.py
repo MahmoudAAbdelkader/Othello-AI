@@ -1,4 +1,5 @@
-### Player Classes ###
+from board import Board
+### Player class ###
 
 class Player:
     def __init__(self, color):
@@ -6,11 +7,16 @@ class Player:
         self.score = 2  # initial score
         self.is_turn = False
 
+    def get_score(self):
+        self.score = 0
+        for row in Board.BOARD:
+            for col in row:
+                if col == self.color:
+                    self.score += 1
+        return self.score
+
     def get_color(self):
         return self.color
-
-    def update_score(self, score):
-        self.score += score
 
     def switch_turn(self):
         self.is_turn = not self.is_turn
@@ -24,12 +30,3 @@ class AIPlayer(Player):
 
 class HumanPlayer(Player):
     pass
-#     def get_input(self):
-#         for event in pygame.event.get():
-#             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-#                 x, y = event.pos
-#                 col = x // self.square_size
-#                 row = y // self.square_size
-#                 if 0 <= row < 8 and 0 <= col < 8:
-#                     return (row, col)
-#         return None
