@@ -261,13 +261,11 @@ class GameUI:
             self.player1 = self.create_player('B', 'human')
             self.player2 = self.create_player('W', 'human')
         elif self.game_mode == 'VS AI':
-            pass
-            # self.player1 = self.create_player('B', 'human')
-            # self.player2 = self.create_player('W', 'ai')
+            self.player1 = self.create_player('B', 'human')
+            self.player2 = self.create_player('W', 'ai')
         else:
-            pass
-            # self.player1 = self.create_player('B', 'ai')
-            # self.player2 = self.create_player('W', 'ai')
+            self.player1 = self.create_player('B', 'ai')
+            self.player2 = self.create_player('W', 'ai')
 
         # Set current player to player 1
         self.current_player = self.player1.get_color()
