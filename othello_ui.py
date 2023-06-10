@@ -1,107 +1,13 @@
 import pygame
 import sys
+import cell
 from player import AIPlayer, HumanPlayer
 from reversi_2 import ReversiBoard
 from main_menu import MainMenu
+from board import Board
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-
-### Board Class ###
-
-
-class Board:
-    def __init__(self):
-        self.board = [
-            [" ", " ", " ", " ", " ", " ", " ", " "],
-            [" ", " ", " ", " ", " ", " ", " ", " "],
-            [" ", " ", " ", " ", " ", " ", " ", " "],
-            [" ", " ", " ", "W", "B", " ", " ", " "],
-            [" ", " ", " ", "B", "W", " ", " ", " "],
-            [" ", " ", " ", " ", " ", " ", " ", " "],
-            [" ", " ", " ", " ", " ", " ", " ", " "],
-            [" ", " ", " ", " ", " ", " ", " ", " "]
-        ]
-        
-
-        self.white_count = 2
-        self.black_count = 2
-
-
-    def set_board(self, new_board):
-        self.board = new_board
-
-    def get_piece(self, row, col):
-        if row >= 0 and row < 8 and col >= 0 and col < 8:    
-            return self.board[row][col]
-
-    def set_piece(self, row, col, piece):
-        self.board[row][col] = piece
-
-    def get_valid_moves(self, color):
-        # TODO: Implement the logic for getting a list of valid moves
-        pass
-
-    def count_pieces(self):
-        # TODO: Implement the logic for counting the number of pieces of each color
-        pass
-
-    def is_game_over(self):
-        # TODO: Implement the logic for determining if the game is over
-        pass
-
-    def get_white_count(self):
-        self.white_count = 0
-        for row in self.board:
-            for col in row:
-                if col == 'W':
-                    self.white_count += 1
-        return self.white_count
-
-    def get_black_count(self):
-        self.black_count = 0
-        for row in self.board:
-            for col in row:
-                if col == 'B':
-                    self.black_count += 1
-        return self.black_count
-
-    def set_valid_moves(self, valid_moves):
-        for i in valid_moves:
-            self.board[i[0]][i[1]] = 'V'
-
-### Cell Class ###
-
-
-class cell:
-    def __init__(self, row, col, state):
-        self.row = row
-        self.col = col
-        self.state = state
-        self.color = (0, 144, 103)
-
-    def draw(self, screen, square_size):
-        x = self.col * square_size
-        y = self.row * square_size
-        # Drawing the square
-        pygame.draw.rect(screen, self.color, (x, y, square_size, square_size))
-        # Drawing the frame
-        pygame.draw.rect(screen, (50, 50, 50),
-                         (x, y, square_size, square_size), 1)
-        if self.state == 'W':
-            pygame.draw.circle(screen, WHITE, (x + square_size //
-                               2, y + square_size // 2), square_size // 2 - 5)
-            self.is_clickable = False
-        elif self.state == 'B':
-            pygame.draw.circle(screen, BLACK, (x + square_size //
-                               2, y + square_size // 2), square_size // 2 - 5)
-            self.is_clickable = False
-        elif self.state == 'V':
-            # draw hollow circle
-            pygame.draw.circle(screen, BLACK, (x + square_size //
-                               2, y + square_size // 2), square_size // 2 - 5, 1)
-
-
 
 ### GameUI Class ###
 class GameUI:
@@ -175,7 +81,7 @@ class GameUI:
     def draw_board(self):
         for row in range(8):
             for col in range(8):
-                new_cell = cell(row, col, self.board.get_piece(row, col))
+                new_cell = cell.Cell(row, col, self.board.get_piece(row, col))
                 new_cell.draw(self.screen, self.square_size)
 
     # The main game loop
@@ -185,7 +91,7 @@ class GameUI:
             # show the status bar
             self.screen.blit(
                 self.statusbar, (0, self.screen_height - self.statusbar_height))
-            self.statusbar_message(self.current_player, self.board.get_white_count(), self.board.get_black_count())
+            self.statusbar_message(self.current_player, self.player2.get_score(), self.player1.get_score())
             
             # update the display
             pygame.display.flip()
@@ -217,7 +123,7 @@ class GameUI:
                     if not(0 <= row < 8 and 0 <= col < 8):
                         print("Invalid move")
                     elif self.board.get_piece(row, col) == 'V':
-                        self.board.board[row][col] = self.current_player
+                        Board.BOARD[row][col] = self.current_player
                         # sending the move to the reversi engine
                         self.reversi.makeMove(self.current_player, row, col)
 
