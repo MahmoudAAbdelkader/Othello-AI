@@ -4,7 +4,7 @@ import cell
 from player import AIPlayer, HumanPlayer
 from reversi_2 import ReversiBoard
 from main_menu import MainMenu
-from board import Board
+from front_board import Board
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -14,7 +14,6 @@ class GameUI:
     def __init__(self):
         # Initialize Pygame
         pygame.init()
-
 
         # Initialize reversi engine
         self.reversi = ReversiBoard()
