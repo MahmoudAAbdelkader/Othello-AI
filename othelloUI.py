@@ -22,10 +22,7 @@ class Board:
             [" ", " ", " ", " ", " ", " ", " ", " "],
             [" ", " ", " ", " ", " ", " ", " ", " "]
         ]
-        self.board[3][3] = 'W'
-        self.board[3][4] = 'B'
-        self.board[4][3] = 'B'
-        self.board[4][4] = 'W'
+        
 
         self.white_count = 2
         self.black_count = 2
