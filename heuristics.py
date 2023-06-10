@@ -32,19 +32,32 @@ board_static_weights = [
 
 
 class GameHeuristics():
-
-
-
     def _init_(self):
-            coinParity_weight = 0.05
-            mobility_weight = 0.35
-            stability_weight = 0.2
-            cornersCaptured_weight = 0.4
+        #giving weights that will be used to calculate each heauristics according to the importance during playing
+        coinParity_weight = 0.05
+        mobility_weight = 0.35
+        stability_weight = 0.2
+        cornersCaptured_weight = 0.4
 
+    def coinParity(self, board):
+        black_coins = 0
+        white_coins = 0
+        # getting the current board
+        board_coins = board.getBoard()
 
+        #iterate through the whole board to count the number of black coins and white coins
+        for row in board_coins: #rows
+            for item in row: #columns (items)
+                if (item == "B"):
+                    black_coins = black_coins + 1
+                elif (item == "W"):
+                    white_coins = white_coins + 1
 
-    def coinParity(self):
-        print('in progress')
+        #Assume that the max player plays with white coins
+        #the value returned is in range of -100 to 100
+        coinParityValue = 100 * ((white_coins - black_coins) / (white_coins + black_coins))
+
+        return coinParityValue
 
 
     def mobility(self, board):
@@ -102,7 +115,7 @@ class GameHeuristics():
         Black_valid_moves = board.getValidMoves("B")
 
     # Check potential corners for white
-        for move in white_moves:
+        for move in white_valid_moves:
             if move == [0,0]:
                 potential_white_corners += 1
             elif move == [0, 7]:
@@ -113,7 +126,7 @@ class GameHeuristics():
                 potential_white_corners += 1
 
         # Check potential corners for black
-        for move in black_moves:
+        for move in Black_valid_moves:
             if move == [0, 0]:
                 potential_black_corners += 1
             elif move == [0, 7]:
@@ -133,16 +146,17 @@ class GameHeuristics():
 
 
     def stability(self):
+
         print('in progress')
 
-#method to Compute a heuristic value for an Othello board state based on a combination of factors,
-#including piece count, mobility, stability, and corners captured.
+    #method to Compute a heuristic value for an Othello board state based on a combination of factors,
+    #including piece count, mobility, stability, and corners captured.
     def combinedHeuristics(self, board):
 
-        coinParity_value = coinParity_weight * self.coinParity(board)
-        mobility_value = mobility_weight * self.mobility(board)
-        stability_value = stability_weight * self.stability(board)
-        cornersCaptured_value = cornersCaptured_weight * self.cornersCaptured(board)
+        coinParity_value = self.coinParity_weight * self.coinParity(board)
+        mobility_value = self.mobility_weight * self.mobility(board)
+        stability_value = self.stability_weight * self.stability(board)
+        cornersCaptured_value = self.cornersCaptured_weight * self.cornersCaptured(board)
 
         value = coinParity_value + mobility_value + stability_value + cornersCaptured_value
 
