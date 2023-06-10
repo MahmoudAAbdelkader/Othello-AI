@@ -1,5 +1,5 @@
 class Board:
-    BOARD = [
+    Blank_board = [
             [" ", " ", " ", " ", " ", " ", " ", " "],
             [" ", " ", " ", " ", " ", " ", " ", " "],
             [" ", " ", " ", " ", " ", " ", " ", " "],
@@ -10,9 +10,9 @@ class Board:
             [" ", " ", " ", " ", " ", " ", " ", " "]
         ]
     
-    def __init__(self):
-        self.count = 2
-
+    BOARD = Blank_board
+    
+    
     def set_board(self, new_board):
         Board.BOARD = new_board
 
@@ -33,3 +33,7 @@ class Board:
     def set_valid_moves(self, valid_moves):
         for i in valid_moves:
             Board.BOARD[i[0]][i[1]] = 'V'
+
+    def reset_board(self):
+        Board.BOARD = Board.Blank_board
+        

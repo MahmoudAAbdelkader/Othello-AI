@@ -58,15 +58,36 @@ class GameUI:
 
     
     def statusbar_message(self, the_turn, white_score, black_score):
-        font = pygame.font.Font(None, int(36 * self.statusbar_height // 120 ))
+        font = pygame.font.Font(None, int(23 * self.statusbar_height // 120 ))
         message = font.render(
             f"{the_turn}'s turn | White: {white_score} | Black: {black_score}", True, BLACK)
         message_rect = message.get_rect(
             center=(self.statusbar_width // 2, self.statusbar_height // 2))
         self.statusbar.fill(pygame.Color('gray'))
         self.statusbar.blit(message, message_rect)
+        
 
 
+        # add a botton in most top left corner
+        home_button = pygame.Rect(0, 0, self.square_size, self.square_size)
+        pygame.draw.rect(self.statusbar, pygame.Color('green'), home_button)
+        home_button_text = font.render("Home", True, BLACK)
+        home_button_text_rect = home_button_text.get_rect(
+            center=(home_button.width // 2, home_button.height // 2))
+        # Add stroke to the rectangle
+        pygame.draw.rect(self.statusbar, BLACK, home_button, 1)
+        self.statusbar.blit(home_button_text, home_button_text_rect)
+
+        restart_button = pygame.Rect(0, self.square_size, self.square_size, self.square_size)
+        pygame.draw.rect(self.statusbar, pygame.Color('orange'), restart_button)
+        restart_button_text = font.render("Restart", True, BLACK)
+        restart_button_text_rect = restart_button_text.get_rect(
+            center=((restart_button.width // 2), (restart_button.height // 2) + self.square_size))
+        pygame.draw.rect(self.statusbar, BLACK, restart_button, 1)
+        self.statusbar.blit(restart_button_text, restart_button_text_rect)
+
+        # add a botton in most top right corner
+        # pygame.draw.rect(self.statusbar, WHITE, (0, 0, self.statusbar_width, self.statusbar_height), 2)
 
     def set_game_mode(self, value, game_mode):
         self.game_mode = game_mode
@@ -132,8 +153,15 @@ class GameUI:
                         else:
                             self.current_player = self.player1.get_color()
 
-                    pygame.display.flip()
 
+                    # checking the buttons
+                    if (row == 8) and (col == 0):
+                        # home button
+                        self.start()
+
+                    if (row == 9) and (col == 0):
+                        # restart button
+                        self.start_game()
                     
 
                     # Updating the whole board
@@ -159,7 +187,10 @@ class GameUI:
 
     def start_game(self):
         """Starts the game with the selected game mode and players."""
+        self.reversi.restart()
+        self.board.reset_board()
         self.draw_board()
+        print(self.board.BOARD)
         pygame.display.flip()
 
         # Create players based on game mode using the factory method
