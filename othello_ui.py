@@ -56,10 +56,17 @@ class GameUI:
         self.statusbar_width = self.screen_width
 
     
-    def statusbar_message(self, the_turn, white_score, black_score):
+    def statusbar_message(self, the_turn = "W", white_score = 2, black_score = 2):
+        names = {"W": "White", "B": "Black", "Draw": "Draw"}
         font = pygame.font.Font(None, int(23 * self.statusbar_height // 120 ))
-        message = font.render(
-            f"{the_turn}'s turn | White: {white_score} | Black: {black_score}", True, BLACK)
+        if not self.reversi.isGameOver():
+            message = font.render(
+                f"{names[the_turn]}'s turn | White: {white_score} | Black: {black_score}", True, BLACK)
+        else:
+            
+            message = font.render(
+                f"{names[self.reversi.getWinner()]} wins! | White: {white_score} | Black: {black_score}", True, BLACK)
+            
         message_rect = message.get_rect(
             center=(self.statusbar_width // 2, self.statusbar_height // 2))
         self.statusbar.fill(pygame.Color('gray'))
@@ -93,7 +100,6 @@ class GameUI:
         self.difficulty = difficulty
 
     # Drawing the board
-
     def draw_board(self):
         for row in range(8):
             for col in range(8):
@@ -136,7 +142,8 @@ class GameUI:
 
         # Updating the whole board
         self.board.set_board(self.reversi.getBoard())
-        self.board.set_valid_moves(self.reversi.getValidMoves(self.current_player))
+        if self.reversi.whoseTurn == 'W' or self.reversi.whoseTurn == 'B':
+            self.board.set_valid_moves(self.reversi.getValidMoves(self.current_player))
         self.draw_board()
 
     # The main PVP game loop
@@ -145,15 +152,7 @@ class GameUI:
         while True:
 
             if(self.reversi.isGameOver()):
-                # add rectangle containing the winner
-                font = pygame.font.Font(None, int(23 * self.statusbar_height // 120 ))
-                message = font.render(
-                    f"Game Over! {self.reversi.getWinner()} wins!", True, BLACK)
-                message_rect = message.get_rect(
-                    center=(self.statusbar_width // 2, self.statusbar_height // 2))
-                self.statusbar.fill(pygame.Color('gray'))
-                self.statusbar.blit(message, message_rect)
-                pygame.display.flip()
+                self.statusbar_message()
 
             # show the status bar
             self.screen.blit(
