@@ -103,7 +103,7 @@ class ReversiBoard:
     # A game has begun if either player has made a move.
     # Which means that the initial state of the game is that the score of both players is 2.
     def hasGameBegun(self):
-        return self.getScore("W") + self.getScore("B") > 4
+        return not(self.getScore("W") == 2 and  self.getScore("B") == 2)
 
 
     # This method is used to check if the given move is valid or not.
@@ -258,30 +258,30 @@ class ReversiBoard:
 #                                   The following code is used to test the board class.                                                                                    #
 ############################################################################################################################################################################
 
-from random import randint
+# from random import randint
 
 #Testing the __init__ method
-myBoard = ReversiBoard()
-myBoard.setTheFirstPlayer("B")
+# myBoard = ReversiBoard()
+# myBoard.setTheFirstPlayer("B")
 
-myBoard.print()
-print()
+# myBoard.print()
+# print()
 
 #Testing Alternating moves between two players
 
-while(not myBoard.isGameOver()):
+# while(not myBoard.isGameOver()):
 
-    player = myBoard.getWhoseTurn()
+#     player = myBoard.getWhoseTurn()
 
-    validMoves = myBoard.getValidMoves(player)
+#     validMoves = myBoard.getValidMoves(player)
 
-    move = validMoves[randint(0,len(validMoves)-1)]
+#     move = validMoves[randint(0,len(validMoves)-1)]
 
-    myBoard.makeMove(player,move[0],move[1])
+#     myBoard.makeMove(player,move[0],move[1])
 
-    myBoard.print()
-    print()
+#     myBoard.print()
+#     print()
 
-print("Is the game over ? " , myBoard.isGameOver())
+# print("Is the game over ? " , myBoard.isGameOver())
 
-print("The winner is: " + myBoard.getWinner())
+# print("The winner is: " + myBoard.getWinner())
