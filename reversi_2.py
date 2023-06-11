@@ -28,22 +28,29 @@ class ReversiBoard:
     [" ", " ", " ", " ", " ", " ", " ", " "],
     [" ", " ", " ", " ", " ", " ", " ", " "]
 ]
+    # The following parameter keeps track of whose turn it is.
+    # It can be either "W" or "B" or " " if the game is over.
+    whoseTurn = "B"
+
+
     # The constructor of the ReversiBoard class.      
     def __init__(self):
-        pass 
-
+        pass # The constructor is empty because the board is already initialized.
+   
+        
     # This private method is used to check if the given cell is inside the board or not.
     def __isInside(self,row : int ,col: int):
         return row >= 0 and row <= 7 and col >= 0 and col <= 7
     
     # This method is used to determine whether a cell has neighbours or not.
+    # A cell has neighbours if there is a cell that is not empty in any of the 8 directions.
     def __hasNeighbours(self,row : int ,col: int):
         directions = [(0,1),(1,0),(0,-1),(-1,0),(1,1),(-1,-1),(1,-1),(-1,1)]
         for direction in directions:
             newRow = row + direction[0]
             newCol = col + direction[1]
             if(self.__isInside(newRow,newCol) and self.board[newRow][newCol] != " "):
-                return self.board[row][col] == ' '
+                return self.board[row][col] == ' ' 
         return False
     
     # This method is used to print the board on the console.
@@ -63,6 +70,8 @@ class ReversiBoard:
     [" ", " ", " ", " ", " ", " ", " ", " "],
     [" ", " ", " ", " ", " ", " ", " ", " "]
 ]
+        self.whoseTurn = "B"
+
     # This method is used as a getter to the 2D array that represents the board.
     def getBoard(self):
         return deepcopy(self.board) # We use deepcopy to return a copy of the board, not a reference to it.
@@ -81,6 +90,24 @@ class ReversiBoard:
                     locations.append([i,j])
         return locations
     
+
+    # This method is used to get the score of the given color.
+    # Possible Colors: "W" or "B", otherwise it will throw an error.
+    # The score is calculated by counting the number of cells that are occupied by the given color.
+    def getScore(self,color : str):
+        if(color not in ["W","B"]):
+            raise Exception("Invalid Color! Color must be either 'W' or 'B'")
+        
+        return len(self.getLocations(color))
+    
+
+    # This method is used to check whether the game has begun or not.
+    # A game has begun if either player has made a move.
+    # Which means that the initial state of the game is that the score of both players is 2.
+    def hasGameBegun(self):
+        return not(self.getScore("W") == 2 and  self.getScore("B") == 2)
+
+
     # This method is used to check if the given move is valid or not.
     # Possible Colors: "W" or "B", otherwise it will throw an error.
     def isValidMove(self, color : str, row : int, col : int):
@@ -143,6 +170,10 @@ class ReversiBoard:
         if(not self.isValidMove(color,row,col)):
             raise Exception("Invalid Move! The given move is not valid.")
         
+        #Check if the player making the move is the current player
+        if(self.whoseTurn != color):
+            raise Exception("Invalid Move! It's not your turn.")
+
         #Making the move
         self.board[row][col] = color
         directions = [(0,1),(1,0),(0,-1),(-1,0),(1,1),(-1,-1),(1,-1),(-1,1)]
@@ -167,7 +198,19 @@ class ReversiBoard:
                         newCol -= direction[1]
                     break
                 #Note: We cannot flip the pieces while looping forward because we don't know if we will find a cell with the same color as the given color or not.
-                
+        
+        #Changing the turn: 
+        # If no one can make a move, then the game is over.
+        if(self.getValidMoves(otherColor) == [] and self.getValidMoves(color) == []):
+            self.whoseTurn = " "
+
+        # If the other player can't make a move, then the current player will play again.
+        elif(self.getValidMoves(otherColor) == []):
+            self.whoseTurn = color
+
+        else: #Otherwise, the other player will play.
+            self.whoseTurn = otherColor
+        
         
     # This method is used to check the board is full or not.
     def isGameOver(self):
@@ -176,20 +219,52 @@ class ReversiBoard:
         return len(WhiteValidMoves) == 0 and len(BlackValidMoves) == 0
     
     # This method is used to get the winner of the game.
+    # Possible return values: "W" or "B" or "Draw"
+    # The method must be called after the game is over, otherwise, it will throw an error.
     def getWinner(self):
         if(not self.isGameOver()):
             raise Exception("Game is not over yet!")
         else:
-            WhiteLocations = self.getLocations("W")
-            BlackLocations = self.getLocations("B")
-            if(len(WhiteLocations) > len(BlackLocations)):
+            
+            whiteScore , blackScore = self.getScore('W'), self.getScore('B')
+
+            if(whiteScore > blackScore):
                 return "W"
-            elif(len(WhiteLocations) < len(BlackLocations)):
+            elif(whiteScore < blackScore):
                 return "B"
             else:
                 return "Draw"
-            
+          
+
+    # This method is used to set which color will play first.
+    # Possible Colors: "W" or "B", otherwise it will throw an error.
+    # The method must be called before starting the game, otherwise, it will throw an error.
+    def setTheFirstPlayer(self, color : str):
+
+        if(color not in ["W","B"]):
+            raise Exception("Invalid Color! Color must be either 'W' or 'B'")
+        
+        #Check if the game has started or not
+        if(self.hasGameBegun()):
+            raise Exception("Game has already begun!")
+        
+        self.whoseTurn = color
+
+    # This method is used to get the color of the player whose turn it is.
+    def getWhoseTurn(self):
+        return self.whoseTurn
+
+    def getOpponent(self,player):
+        return "W" if player == "B" else "B"
+    
+    def getCopy(self):
+        #create new object
+        reversedBoard = ReversiBoard()
+        reversedBoard.board = deepcopy(self.board)
+        return reversedBoard
+    
+    
+                    
 ############################################################################################################################################################################
 #                                   The following code is used to test the board class.                                                                                    #
 ############################################################################################################################################################################
-
