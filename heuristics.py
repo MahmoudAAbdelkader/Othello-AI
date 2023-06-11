@@ -4,7 +4,7 @@
 # Date: 2022-6-10
 # Description: This file contains all the heuristics that will be used in the game.
 ############################################################################################################
-
+from board import ReversiBoard
 # Demo for the board shape:
 # 2D list where White is represented as W and Black is represented as B
 #
@@ -67,19 +67,31 @@ class GameHeuristics():
         white_utility_value = white_coins_value - black_coins_value
         black_utility_value = black_coins_value - white_coins_value
 
+        if(white_utility_value == black_utility_value):
+            return 0
+
         #Scale the utility value to range from -100 to 100
         if(player == "W"):
-            utility_scaled_value = 100 * (2 * (white_utility_value - black_utility_value) - (white_utility_value - black_utility_value - 2 * abs(white_utility_value))) / (white_utility_value - black_utility_value)
+            if (white_utility_value>14):
+                white_utility_value=14
+            elif(white_utility_value<-14):
+                white_utility_value=-14
+            utility_scaled_value = (100*white_utility_value)/14
 
         elif(player == "B"):
-            utility_scaled_value = 100 * (2 * (black_utility_value - white_utility_value) - (black_utility_value - white_utility_value - 2 * abs(black_utility_value))) / (black_utility_value - white_utility_value)
+            if (black_utility_value>14):
+                black_utility_value=14
+            elif(black_utility_value<-14):
+                black_utility_value=-14
+            utility_scaled_value = (100*black_utility_value)/14
 
         return utility_scaled_value
 
 
+
     #This method is used to calculate the heuristics based on the coin parity
     #The player who has the most coins on the board has higher value
-    def coinParity(self, board, player):
+    def coinParity(self, board: ReversiBoard, player):
         black_coins = 0
         white_coins = 0
         coinParityValue = 0
@@ -106,7 +118,7 @@ class GameHeuristics():
 
 
     #method is used to calculate the heuristic value based on the mobility.
-    def mobility(self, board, player):
+    def mobility(self, board: ReversiBoard, player):
         mobility_value = 0
         #counting the number of valid moves for each color
         white_actual_mobility = len(board.getValidMoves("W"))
@@ -125,7 +137,7 @@ class GameHeuristics():
 
     #method is used to calculate the heuristic value based on the corner captured.
     #by determining the actual captured corners and the potential captured corners
-    def cornersCaptured(self,board ,player):
+    def cornersCaptured(self,board:ReversiBoard ,player):
         #Actual captured corners
         #assign weights to actual and potential corners
         actual_corners_weight = 0.8
@@ -203,7 +215,7 @@ class GameHeuristics():
             elif(player == "B"):
                 potentailcornersCaptured_value = 100 * (potential_black_corners - potential_white_corners) / (potential_black_corners + potential_white_corners)
         # calculate the total value of both actual and potential captured vlue
-        corners_value = 100 * (actual_corners_weight * actualcornersCaptured_value + potential_corners_weight * potentailcornersCaptured_value)
+        corners_value = (actual_corners_weight * actualcornersCaptured_value + potential_corners_weight * potentailcornersCaptured_value)
 
         return corners_value
 
@@ -336,7 +348,7 @@ class GameHeuristics():
 
     #method to Compute a heuristic value for an Othello board state based on a combination of factors,
     #including piece count, mobility, stability, and corners captured.
-    def combinedHeuristics(self, board,player):
+    def combinedHeuristics(self, board: ReversiBoard,player):
 
         coinParity_value = self.coinParity_weight * self.coinParity(board,player)
         mobility_value = self.mobility_weight * self.mobility(board,player)
