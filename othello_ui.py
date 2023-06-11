@@ -127,12 +127,17 @@ class GameUI:
         x, y = event.pos
         col = x // self.square_size
         row = y // self.square_size
+        
+        self.player1.setLambda(lambda x:(row,col))
+        self.player2.setLambda(lambda x:(row,col))
+
         if not(0 <= row < 8 and 0 <= col < 8):
             print("Invalid move")
         elif self.board.get_piece(row, col) == 'V':
             Board.BOARD[row][col] = self.current_player
             # sending the move to the reversi engine
-            self.reversi.makeMove(self.current_player, row, col)
+            #self.reversi.makeMove(self.current_player, row, col)
+            self.playerMap[self.current_player].makeAMove()
 
         self.current_player = self.reversi.whoseTurn
         
@@ -184,19 +189,30 @@ class GameUI:
         # update the display
         pygame.display.flip()
 
+        self.current_player = self.reversi.whoseTurn
+
+        self.playerMap[self.current_player].makeAMove()
+
+        print("AI MOVE DONE")
+
+        self.reversi.print()
+
         
-        ai_valid_moves = self.reversi.getValidMoves(self.current_player)
-        if len(ai_valid_moves) > 0:
-            move = random.choice(ai_valid_moves)
-            self.reversi.makeMove(self.current_player, move[0], move[1])
-            self.current_player = self.reversi.whoseTurn
+        # print("AI is thinking...")
+
+        
+        # ai_valid_moves = self.reversi.getValidMoves(self.current_player)
+        # if len(ai_valid_moves) > 0:
+        #     move = random.choice(ai_valid_moves)
+        #     self.reversi.makeMove(self.current_player, move[0], move[1])
+        # self.current_player = self.reversi.whoseTurn
         
 
-            # Updating the whole board
-            self.board.set_board(self.reversi.getBoard())
-            if self.reversi.whoseTurn == 'W' or self.reversi.whoseTurn == 'B':
-                self.board.set_valid_moves(self.reversi.getValidMoves(self.current_player))
-            self.draw_board()
+        #     # Updating the whole board
+        self.board.set_board(self.reversi.getBoard())
+        if self.reversi.whoseTurn == 'W' or self.reversi.whoseTurn == 'B':
+            self.board.set_valid_moves(self.reversi.getValidMoves(self.reversi.whoseTurn))
+        self.draw_board()
 
     # The main game loop for each game mode
     # mode: PVP, PVA, AVA
@@ -215,11 +231,15 @@ class GameUI:
 
             # Update the current player
             self.current_player = self.reversi.whoseTurn
-
+            
             # If it's AI's turn, call the dummy_ai_move function
             if not(self.reversi.isGameOver()):
                 if (mode == "PVA" and self.current_player == "W") or mode == "AVA":
+                    
                     self.dummy_ai_move() 
+                    
+                    # pygame.display.flip()
+                    #self.playerMap[self.reversi.getWhoseTurn()].makeAMove()
                     continue
 
             # Handle events
@@ -273,6 +293,7 @@ class GameUI:
         """Factory method to create a player object based on the given color and player type."""
         if player_type == 'human':
             return HumanPlayer(color, self.reversi)
+            
         elif player_type == 'ai':
             return AIPlayer(color, self.reversi, self.difficulty)
 
@@ -287,19 +308,25 @@ class GameUI:
         # Set current player to Black
         self.current_player = 'B'
 
+        gameMode = ' '
         # Create players based on game mode using the factory method
         if self.game_mode == 'VS Player':
             self.player1 = self.create_player('B', 'human')
             self.player2 = self.create_player('W', 'human')
-            self.run('PVP')
+            gameMode = 'PVP'
+            
         elif self.game_mode == 'VS AI':
             self.player1 = self.create_player('B', 'human')
             self.player2 = self.create_player('W', 'ai')
-            self.run('PVA')
+            gameMode = 'PVA'
+            
         else:
             self.player1 = self.create_player('B', 'ai')
             self.player2 = self.create_player('W', 'ai')
-            self.run('AVA')
+            gameMode = 'AVA'
+        
+        self.playerMap = {'B': self.player1, 'W': self.player2}
+        self.run(gameMode)
 
         # Quit Pygame
         pygame.quit()

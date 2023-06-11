@@ -7,7 +7,7 @@ class MainMenu:
 
     def show_welcome_screen(self):
         menu = pygame_menu.Menu(
-            'Welcome to othello',
+            'Welcome to Othello!',
             self.game_object.screen_width,
             self.game_object.screen_height,
             theme=pygame_menu.themes.THEME_SOLARIZED)
