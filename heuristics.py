@@ -5,19 +5,17 @@
 # Description: This file contains all the heuristics that will be used in the game.
 ############################################################################################################
 
-# Demo for the board shape:
-# 2D list where White is represented as W and Black is represented as B
-#
-# board = [
-#     [" ", " ", " ", " ", " ", " ", " ", " "],
-#     [" ", " ", " ", " ", " ", " ", " ", " "],
-#     [" ", " ", " ", " ", " ", " ", " ", " "],
-#     [" ", " ", " ", "W", "B", " ", " ", " "],
-#     [" ", " ", " ", "B", "W", " ", " ", " "],
-#     [" ", " ", " ", " ", " ", " ", " ", " "],
-#     [" ", " ", " ", " ", " ", " ", " ", " "],
-#     [" ", " ", " ", " ", " ", " ", " ", " "]
-# ]
+board = [
+    [" ", " ", " ", " ", " ", " ", " ", " "],
+    [" ", " ", " ", " ", " ", " ", " ", " "],
+    [" ", " ", " ", " ", " ", " ", " ", " "],
+    [" ", " ", " ", "W", "B", " ", " ", " "],
+    [" ", " ", " ", "B", "W", " ", " ", " "],
+    [" ", " ", " ", " ", " ", " ", " ", " "],
+    [" ", " ", " ", " ", " ", " ", " ", " "],
+    [" ", " ", " ", " ", " ", " ", " ", " "]
+]
+
 
 #static weight associated to each coin position
 
@@ -31,6 +29,8 @@ board_static_weights = [
     [-3, -4, -1, -1, -1, -1, -4, -3],
     [4, -3, 2, 2, 2, 2, -3, 4]
 ]
+
+
 class GameHeuristics():
     # giving weights that will be used to calculate each heauristics according to the importance during playing
     coinParity_weight = 0.05
@@ -163,68 +163,6 @@ class GameHeuristics():
 
 
     def stability(self,board,player):
-
-        #flag to be updated
-        #if the coin is stable it will be 1
-        #if the coin is unstable it will be 0
-        #if the coin is semi-stable it will be -1
-
-        max_stable = 0
-        min_stable = 0
-        for row in board:
-            for item in row:
-                if(item == player):
-                    #case 1: the coin is in the corner then it's definetly stable
-                    if ((row == 0 or row == 7) and (item == 0 or item ==7)):
-                        max_stable += 1
-                    #if the coin is found in the edges of the board we need to check
-                    #that it has an adjacent element of its color to be stable
-                    elif (row == 0 or row == 7 or item == 0 or item == 7):
-                        if(row == 7):
-                            if(board[row-1][item]== player):  #check item at [6,any column]
-                                max_stable += 1
-                        if (row == 0):
-                            if (board[row + 1][item] == player): #check item at [1,any column]
-                                max_stable += 1
-                        if (item == 7):
-                            if (board[row][item-1] == player): #check item at [any row,6]
-                                max_stable += 1
-                        if (item == 0):
-                            if (board[row][item+1] == player): #check item at [any row,1]
-                                max_stable += 1
-
-
-                                # W        #     W
-                                # W "W"    # "W" W
-                                # W        #     W
-                    elif (((board[row-1][item-1]==player)and(board[row][item-1]==player)and(board[row+1][item-1]==player))or
-                          ((board[row-1][item+1]==player)and(board[row][item+1]==player)and(board[row+1][item+1]==player))or
-                          ((board[row-1][item]==player)and(board[row][item-1]==player)and(board[row+1][item]==player))or
-                          (((board[row-1][item]==player)and(board[row][item+1]==player)and(board[row+1][item]==player)))):
-                        max_stable += 1
-
-
-                elif ((item != player) and (item != ' ')):
-                    # case 1: the coin is in the corner then it's definetly stable
-                    if ((row == 0 or row == 7) and (item == 0 or item == 7)):
-                        min_stable += 1
-                    # if the coin is found in the edges of the board we need to check
-                    # that it has an adjacent element of its color to be stable
-                    elif (row == 0 or row == 7 or item == 0 or item == 7):
-                        if (row == 7):
-                            if (board[row - 1][item] == ((item != player) and (item != ' '))):  # check item at [6,any column]
-                                min_stable += 1
-                        if (row == 0):
-                            if (board[row + 1][item] == ((item != player) and (item != ' '))):  # check item at [1,any column]
-                                min_stable += 1
-                        if (item == 7):
-                            if (board[row][item - 1] == ((item != player) and (item != ' '))):  # check item at [any row,6]
-                                min_stable += 1
-                        if (item == 0):
-                            if (board[row][item + 1] == ((item != player) and (item != ' '))):  # check item at [any row,1]
-                                min_stable += 1
-
-
 
         print('in progress')
         return 1
