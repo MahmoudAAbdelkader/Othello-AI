@@ -224,7 +224,9 @@ class GameHeuristics():
         max_player_stability_value = 0
         min_player_stability_value = 0
 
-        for row in board: #iterating through rows
+        board_stability = self.board.getBoard()
+
+        for row in board_stability: #iterating through rows
             for item in row: #iterating through col to get the items
                 if(item == player):
 
@@ -238,16 +240,16 @@ class GameHeuristics():
 
                     elif (row == 0 or row == 7 or item == 0 or item == 7):
                         if(row == 7):
-                            if(board[row-1][item]== player):  #check item at [6,any column]
+                            if(board_stability[row-1][item]== player):  #check item at [6,any column]
                                 max_stable += 1
                         if (row == 0):
-                            if (board[row + 1][item] == player): #check item at [1,any column]
+                            if (board_stability[row + 1][item] == player): #check item at [1,any column]
                                 max_stable += 1
                         if (item == 7):
-                            if (board[row][item-1] == player): #check item at [any row,6]
+                            if (board_stability[row][item-1] == player): #check item at [any row,6]
                                 max_stable += 1
                         if (item == 0):
-                            if (board[row][item+1] == player): #check item at [any row,1]
+                            if (board_stability[row][item+1] == player): #check item at [any row,1]
                                 max_stable += 1
 
 
@@ -256,14 +258,14 @@ class GameHeuristics():
                     # W "W"    # "W" W     # W "W"    #  "W" W
                     # W        #     W     #    W     #   W
 
-                    elif (((board[row-1][item-1]==player)and(board[row][item-1]==player)and(board[row+1][item-1]==player))or
-                          ((board[row-1][item+1]==player)and(board[row][item+1]==player)and(board[row+1][item+1]==player))or
-                          ((board[row-1][item]==player)and(board[row][item-1]==player)and(board[row+1][item]==player))or
-                          (((board[row-1][item]==player)and(board[row][item+1]==player)and(board[row+1][item]==player)))):
+                    elif (((board_stability[row-1][item-1]==player)and(board_stability[row][item-1]==player)and(board_stability[row+1][item-1]==player))or
+                          ((board_stability[row-1][item+1]==player)and(board_stability[row][item+1]==player)and(board_stability[row+1][item+1]==player))or
+                          ((board_stability[row-1][item]==player)and(board_stability[row][item-1]==player)and(board_stability[row+1][item]==player))or
+                          (((board_stability[row-1][item]==player)and(board_stability[row][item+1]==player)and(board_stability[row+1][item]==player)))):
                         max_stable += 1
 
                     #checking if the coin can be unstable in future moves
-                    elif any(board[i][j] == " " for i in range(row - 1, row + 2) for j in range(item - 1, item + 2)):
+                    elif any(board_stability[i][j] == " " for i in range(row - 1, row + 2) for j in range(item - 1, item + 2)):
                         max_semistable += 0
 
                     #any case other than those handled before will be unstable
@@ -283,17 +285,17 @@ class GameHeuristics():
 
                     elif (row == 0 or row == 7 or item == 0 or item == 7):
                         if (row == 7):
-                            if (board[row - 1][item] not in player_list):  # check item at [6,any column]
+                            if (board_stability[row - 1][item] not in player_list):  # check item at [6,any column]
                                 min_stable += 1
                         if (row == 0):
-                            if (board[row + 1][item] not in player_list):  # check item at [1,any column]
+                            if (board_stability[row + 1][item] not in player_list):  # check item at [1,any column]
                                 min_stable += 1
                         if (item == 7):
-                            if (board[row][item - 1] not in player_list):  # check item at [any row,6]
+                            if (board_stability[row][item - 1] not in player_list):  # check item at [any row,6]
                                 min_stable += 1
                         if (item == 0):
                             # == ((item != player) and (item != ' ')) may be needed
-                            if (board[row][item + 1] not in player_list):  # check item at [any row,1]
+                            if (board_stability[row][item + 1] not in player_list):  # check item at [any row,1]
                                 min_stable += 1
 
                     #Sample for the cases that can be stable in case min player is B
@@ -301,15 +303,15 @@ class GameHeuristics():
                     # B "B"    # "B" B     # B "B"    #  "B" B
                     # B        #     B     #    B     #   B
 
-                    elif (((board[row-1][item-1] not in player_list)and(board[row][item-1] not in player_list)and(board[row+1][item-1]not in player_list))or
-                          ((board[row-1][item+1] not in player_list)and(board[row][item+1] not in player_list)and(board[row+1][item+1]not in player_list))or
-                          ((board[row-1][item] not in player_list)and(board[row][item-1] not in player_list)and(board[row+1][item]not in player_list))or
-                          (((board[row-1][item] not in player_list)and(board[row][item+1] not in player_list)and(board[row+1][item]not in player_list)))):
+                    elif (((board_stability[row-1][item-1] not in player_list)and(board_stability[row][item-1] not in player_list)and(board_stability[row+1][item-1]not in player_list))or
+                          ((board_stability[row-1][item+1] not in player_list)and(board_stability[row][item+1] not in player_list)and(board_stability[row+1][item+1]not in player_list))or
+                          ((board_stability[row-1][item] not in player_list)and(board_stability[row][item-1] not in player_list)and(board_stability[row+1][item]not in player_list))or
+                          (((board_stability[row-1][item] not in player_list)and(board_stability[row][item+1] not in player_list)and(board_stability[row+1][item]not in player_list)))):
                         min_stable += 1
 
                     #checking if the coin will be unstabel in future moves
 
-                    elif any(board[i][j] == " " for i in range(row - 1, row + 2) for j in range(item - 1, item + 2)):
+                    elif any(board_stability[i][j] == " " for i in range(row - 1, row + 2) for j in range(item - 1, item + 2)):
                         min_semistable += 0
 
                     #any case other than those handled before will be unstable
