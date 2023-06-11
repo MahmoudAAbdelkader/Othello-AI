@@ -209,7 +209,7 @@ class GameHeuristics():
 
 
     # This method is used to calculate the heuristic value based on the stability of the coin
-    def stability(self,board,player):
+    def stability(self,board : ReversiBoard ,player):
 
         #flag to be updated
         #if the coin is stable it will be incremented by 1
@@ -223,12 +223,13 @@ class GameHeuristics():
         min_unstable = 0
         max_player_stability_value = 0
         min_player_stability_value = 0
+        player_list = [player, " "]
 
-        board_stability = self.board.getBoard()
+        board_stability = board.getBoard()
 
-        for row in board_stability: #iterating through rows
-            for item in row: #iterating through col to get the items
-                if(item == player):
+        for row in range (8): #iterating through rows
+            for item in range (8): #iterating through col to get the items
+                if(board_stability[row][item] == "W"):
 
                     #Case 1: the coin is in the corner then it's definetly stable
 
@@ -240,16 +241,16 @@ class GameHeuristics():
 
                     elif (row == 0 or row == 7 or item == 0 or item == 7):
                         if(row == 7):
-                            if(board_stability[row-1][item]== player):  #check item at [6,any column]
+                            if(board_stability[row-1][item]== "W"):  #check item at [6,any column]
                                 max_stable += 1
                         if (row == 0):
-                            if (board_stability[row + 1][item] == player): #check item at [1,any column]
+                            if (board_stability[row + 1][item] == "W"): #check item at [1,any column]
                                 max_stable += 1
                         if (item == 7):
-                            if (board_stability[row][item-1] == player): #check item at [any row,6]
+                            if (board_stability[row][item-1] == "W"): #check item at [any row,6]
                                 max_stable += 1
                         if (item == 0):
-                            if (board_stability[row][item+1] == player): #check item at [any row,1]
+                            if (board_stability[row][item+1] == "W"): #check item at [any row,1]
                                 max_stable += 1
 
 
@@ -258,10 +259,10 @@ class GameHeuristics():
                     # W "W"    # "W" W     # W "W"    #  "W" W
                     # W        #     W     #    W     #   W
 
-                    elif (((board_stability[row-1][item-1]==player)and(board_stability[row][item-1]==player)and(board_stability[row+1][item-1]==player))or
-                          ((board_stability[row-1][item+1]==player)and(board_stability[row][item+1]==player)and(board_stability[row+1][item+1]==player))or
-                          ((board_stability[row-1][item]==player)and(board_stability[row][item-1]==player)and(board_stability[row+1][item]==player))or
-                          (((board_stability[row-1][item]==player)and(board_stability[row][item+1]==player)and(board_stability[row+1][item]==player)))):
+                    elif (((board_stability[row-1][item-1]=="W")and(board_stability[row][item-1]=="W")and(board_stability[row+1][item-1]=="W"))or
+                        ((board_stability[row-1][item+1]=="W")and(board_stability[row][item+1]=="W")and(board_stability[row+1][item+1]=="W"))or
+                        ((board_stability[row-1][item]=="W")and(board_stability[row][item-1]=="W")and(board_stability[row+1][item]=="W"))or
+                        (((board_stability[row-1][item]=="W")and(board_stability[row][item+1]=="W")and(board_stability[row+1][item]=="W")))):
                         max_stable += 1
 
                     #checking if the coin can be unstable in future moves
@@ -272,8 +273,8 @@ class GameHeuristics():
                     else:
                         max_unstable -= 1
 
-                elif ((item != player) and (item != ' ')):
-                    player_list = [player," "]
+
+                elif (board_stability[row][item] == "B"):
 
                     # case 1: the coin is in the corner then it's definetly stable
 
@@ -285,17 +286,17 @@ class GameHeuristics():
 
                     elif (row == 0 or row == 7 or item == 0 or item == 7):
                         if (row == 7):
-                            if (board_stability[row - 1][item] not in player_list):  # check item at [6,any column]
+                            if (board_stability[row - 1][item] == "B"):  # check item at [6,any column]
                                 min_stable += 1
                         if (row == 0):
-                            if (board_stability[row + 1][item] not in player_list):  # check item at [1,any column]
+                            if (board_stability[row + 1][item] == "B"):  # check item at [1,any column]
                                 min_stable += 1
                         if (item == 7):
-                            if (board_stability[row][item - 1] not in player_list):  # check item at [any row,6]
+                            if (board_stability[row][item - 1] == "B"):  # check item at [any row,6]
                                 min_stable += 1
                         if (item == 0):
                             # == ((item != player) and (item != ' ')) may be needed
-                            if (board_stability[row][item + 1] not in player_list):  # check item at [any row,1]
+                            if (board_stability[row][item + 1] == "B"):  # check item at [any row,1]
                                 min_stable += 1
 
                     #Sample for the cases that can be stable in case min player is B
@@ -303,10 +304,10 @@ class GameHeuristics():
                     # B "B"    # "B" B     # B "B"    #  "B" B
                     # B        #     B     #    B     #   B
 
-                    elif (((board_stability[row-1][item-1] not in player_list)and(board_stability[row][item-1] not in player_list)and(board_stability[row+1][item-1]not in player_list))or
-                          ((board_stability[row-1][item+1] not in player_list)and(board_stability[row][item+1] not in player_list)and(board_stability[row+1][item+1]not in player_list))or
-                          ((board_stability[row-1][item] not in player_list)and(board_stability[row][item-1] not in player_list)and(board_stability[row+1][item]not in player_list))or
-                          (((board_stability[row-1][item] not in player_list)and(board_stability[row][item+1] not in player_list)and(board_stability[row+1][item]not in player_list)))):
+                    elif (((board_stability[row-1][item-1] == "B")and(board_stability[row][item-1] == "B")and(board_stability[row+1][item-1] == "B"))or
+                        ((board_stability[row-1][item+1] == "B")and(board_stability[row][item+1] == "B")and(board_stability[row+1][item+1] == "B"))or
+                        ((board_stability[row-1][item] == "B")and(board_stability[row][item-1] == "B")and(board_stability[row+1][item] == "B"))or
+                        (((board_stability[row-1][item] == "B")and(board_stability[row][item+1] == "B")and(board_stability[row+1][item] == "B")))):
                         min_stable += 1
 
                     #checking if the coin will be unstabel in future moves
@@ -322,7 +323,11 @@ class GameHeuristics():
         min_player_stability_value = min_stable + min_unstable + min_semistable
 
         if ((max_player_stability_value + min_player_stability_value) != 0):
-            Stability_heuristic_value = 100 * ((max_player_stability_value - min_player_stability_value ) /(max_player_stability_value+ min_player_stability_value))
+            if(player == "W"):
+                Stability_heuristic_value = 100 * ((max_player_stability_value - min_player_stability_value ) /(max_player_stability_value + min_player_stability_value))
+            if(player == "B"):
+                Stability_heuristic_value = 100 * ((min_player_stability_value - max_player_stability_value ) /(min_player_stability_value + max_player_stability_value))
+
         else:
             Stability_heuristic_value = 0
 
