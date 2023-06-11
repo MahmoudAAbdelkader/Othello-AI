@@ -93,10 +93,7 @@ class GameUI:
         pygame.draw.rect(self.statusbar, BLACK, restart_button, 1)
         self.statusbar.blit(restart_button_text, restart_button_text_rect)
 
-        # add a botton in most top right corner
-        # pygame.draw.rect(self.statusbar, WHITE, (0, 0, self.statusbar_width, self.statusbar_height), 2)
-
-    def set_game_mode(self, value, game_mode):
+    def set_game_mode(self, game_mode):
         self.game_mode = game_mode
 
     def set_difficulty(self, value, difficulty):
@@ -122,11 +119,7 @@ class GameUI:
             (self.statusbar_width, self.statusbar_height))
         self.statusbar.fill(pygame.Color('gray'))
 
-    def handle_mouse_click_pvp(self, event):
-        x, y = event.pos
-        col = x // self.square_size
-        row = y // self.square_size
-        
+    def handle_mouse_click_pvp(self, row, col):
         self.player1.setLambda(lambda x:(row,col))
         self.player2.setLambda(lambda x:(row,col))
 
@@ -134,13 +127,10 @@ class GameUI:
             print("Invalid move")
         elif self.board.get_piece(row, col) == 'V':
             Board.BOARD[row][col] = self.current_player
-            # sending the move to the reversi engine
-            #self.reversi.makeMove(self.current_player, row, col)
             self.playerMap[self.current_player].makeAMove()
 
         self.current_player = self.reversi.whoseTurn
         
-
         # Updating the whole board
         self.board.set_board(self.reversi.getBoard())
         if self.reversi.whoseTurn == 'W' or self.reversi.whoseTurn == 'B':
@@ -170,7 +160,7 @@ class GameUI:
 
     # The main game loop for each game mode
     # mode: PVP, PVA, AVA
-    # if the current player is AI, call the dummy_ai_move function THAT NEEDS TO BE CHANGED
+    # if the current player is AI, call MAKEAMOVE function from the player class
     # if the current player is human, wait for the mouse click
     def run(self, mode):
         # game loop
@@ -189,11 +179,7 @@ class GameUI:
             # If it's AI's turn, call the dummy_ai_move function
             if not(self.reversi.isGameOver()):
                 if (mode == "PVA" and self.current_player == "W") or mode == "AVA":
-                    
                     self.dummy_ai_move() 
-                    
-                    # pygame.display.flip()
-                    #self.playerMap[self.reversi.getWhoseTurn()].makeAMove()
                     continue
 
             # Handle events
@@ -213,21 +199,16 @@ class GameUI:
                     if (row == 8) and (col == 0):
                         # home button
                         self.start()
-
                     if (row == 9) and (col == 0):
                         # restart button
                         self.start_game()
                     if mode == 'PVP':
-                        self.handle_mouse_click_pvp(event)
+                        self.handle_mouse_click_pvp(row,col)
                         continue
                     elif mode == 'PVA':
                         if self.current_player == "B":
-                            self.handle_mouse_click_pvp(event)
+                            self.handle_mouse_click_pvp(row,col)
                             continue
-                    elif mode == 'AVA':
-                        pass
-            
-              
             self.clock.tick(60)
 
     # the main AVA game loop
@@ -242,6 +223,7 @@ class GameUI:
         pygame.display.set_caption("Othello")
         main_menu = MainMenu(self)
         main_menu.show_welcome_screen()
+        
 
     def create_player(self, color, player_type):
         """Factory method to create a player object based on the given color and player type."""
