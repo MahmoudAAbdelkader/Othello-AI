@@ -131,7 +131,7 @@ class GameHeuristics():
 
         #check the total moves value
         if white_actual_mobility + black_actual_mobility == 0:
-            mobility_value = 0
+            return 0
 
         #calculate the mobility value
         if(player == "W"):
@@ -149,7 +149,7 @@ class GameHeuristics():
         #assign weights to actual and potential corners
         actual_corners_weight = 0.8
         potential_corners_weight = 0.2
-        board_coins = self.board.getBoard()
+        board_coins = board.getBoard()
 
         #initialize actual corners value for black and weight
         white_actual_corners_count = 0
@@ -244,7 +244,7 @@ class GameHeuristics():
         #if the coin is unstable it will be decremented by -1
         max_player_stability_value = 0
         min_player_stability_value = 0
-        Stability_heuristic_value = 0 
+        Stability_heuristic_value = 0
         #get the current board in the game
         board_stability = board.getBoard()
 
@@ -386,36 +386,36 @@ class GameHeuristics():
 
         return value
 
-    ###############################################################################################################
-    # Testing the heuristic functions
-    ###############################################################################################################
-
-board = [[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-
-         [' ', ' ', ' ', ' ', ' ', 'W', ' ', ' '],
-
-         [' ', ' ', 'W', 'W', 'W', 'B', ' ', ' '],
-
-         [' ', ' ', 'B', 'W', 'B', ' ', ' ', ' '],
-
-         [' ', ' ', 'B', 'B', 'W', ' ', ' ', ' '],
-
-         [' ', ' ', 'B', ' ', ' ', ' ', ' ', ' '],
-
-         [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-
-         [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']]
-reversi_board = ReversiBoard()
-reversi_board.board = board
-
-reversi_board.whoseTurn = 'W'
-
-reversi_board.print()
-
-heuristic = GameHeuristics()
-
-value = heuristic.stability(reversi_board, 'W')
-
-print("Stability heuristic value: ", value)
-
-
+#     ###############################################################################################################
+#     # Testing the heuristic functions
+#     ###############################################################################################################
+#
+# board = [[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+#
+#          [' ', ' ', ' ', ' ', ' ', 'W', ' ', ' '],
+#
+#          [' ', ' ', 'W', 'W', 'W', 'B', ' ', ' '],
+#
+#          [' ', ' ', 'B', 'W', 'B', ' ', ' ', ' '],
+#
+#          [' ', ' ', 'B', 'B', 'W', ' ', ' ', ' '],
+#
+#          [' ', ' ', 'B', ' ', ' ', ' ', ' ', ' '],
+#
+#          [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+#
+#          [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']]
+# reversi_board = ReversiBoard()
+# reversi_board.board = board
+#
+# reversi_board.whoseTurn = 'W'
+#
+# reversi_board.print()
+#
+# heuristic = GameHeuristics()
+#
+# value = heuristic.stability(reversi_board, 'W')
+#
+# print("Stability heuristic value: ", value)
+#
+#
