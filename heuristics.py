@@ -244,7 +244,7 @@ class GameHeuristics():
         #if the coin is unstable it will be decremented by -1
         max_player_stability_value = 0
         min_player_stability_value = 0
-
+        Stability_heuristic_value = 0 
         #get the current board in the game
         board_stability = board.getBoard()
 
@@ -280,10 +280,15 @@ class GameHeuristics():
                     # W "W"    # "W" W     # W "W"    #  "W" W
                     # W        #     W     #    W     #   W
                     #
-                    elif (((board_stability[row-1][item-1]=="W")and(board_stability[row][item-1]=="W")and(board_stability[row+1][item-1]=="W"))and
-                          ((board_stability[row-1][item+1]=="W")and(board_stability[row][item+1]=="W")and(board_stability[row+1][item+1]=="W"))and
-                          ((board_stability[row-1][item]=="W")and(board_stability[row+1][item]=="W"))
-                    ):
+                    elif (((board_stability[row - 1][item - 1] == "W") and (board_stability[row][item - 1] == "W") and (
+                            board_stability[row + 1][item - 1] == "W")) or
+                          ((board_stability[row - 1][item + 1] == "W") and (board_stability[row][item + 1] == "W") and (
+                                  board_stability[row + 1][item + 1] == "W")) or
+                          ((board_stability[row - 1][item] == "W") and (board_stability[row][item - 1] == "W") and (
+                                  board_stability[row + 1][item] == "W")) or
+                          (((board_stability[row - 1][item] == "W") and (board_stability[row][item + 1] == "W") and (
+                                  board_stability[row + 1][item] == "W")))):
+
                         max_player_stability_value += 1
 
                     #checking if the coin can be unstable in future moves
@@ -325,9 +330,17 @@ class GameHeuristics():
                     # B "B"    # "B" B     # B "B"    #  "B" B
                     # B        #     B     #    B     #   B
 
-                    elif (((board_stability[row-1][item-1] == "B")and(board_stability[row][item-1] == "B")and(board_stability[row+1][item-1] == "B"))and
-                          ((board_stability[row-1][item+1] == "B")and(board_stability[row][item+1] == "B")and(board_stability[row+1][item+1] == "B"))and
-                          ((board_stability[row-1][item] == "B")and(board_stability[row+1][item] == "B"))):
+                    elif (((board_stability[row - 1][item - 1] == "B") and (board_stability[row][item - 1] == "B") and (
+                            board_stability[row + 1][item - 1] == "B")) or
+
+                          ((board_stability[row - 1][item + 1] == "B") and (board_stability[row][item + 1] == "B") and (
+                                  board_stability[row + 1][item + 1] == "B")) or
+
+                          ((board_stability[row - 1][item] == "B") and (board_stability[row][item - 1] == "B") and (
+                                  board_stability[row + 1][item] == "B")) or
+
+                          (((board_stability[row - 1][item] == "B") and (board_stability[row][item + 1] == "B") and (
+                                  board_stability[row + 1][item] == "B")))):
                         min_player_stability_value += 1
 
                     #checking if the coin will be unstabel in future moves
@@ -344,9 +357,15 @@ class GameHeuristics():
 
         if ((max_player_stability_value + min_player_stability_value) != 0):
             if(player == "W"):
-                Stability_heuristic_value = 100 * ((max_player_stability_value - min_player_stability_value ) /(abs(max_player_stability_value) + abs(min_player_stability_value)))
+                Stability_heuristic_value = 100 * ((max_player_stability_value - min_player_stability_value ) /(max_player_stability_value + min_player_stability_value))
             if(player == "B"):
-                Stability_heuristic_value = 100 * ((min_player_stability_value - max_player_stability_value ) /(abs(min_player_stability_value) + abs(max_player_stability_value)))
+                Stability_heuristic_value = 100 * ((min_player_stability_value - max_player_stability_value ) /(min_player_stability_value + max_player_stability_value))
+
+            if(Stability_heuristic_value > 100):
+                Stability_heuristic_value = 100
+            if(Stability_heuristic_value < -100):
+                Stability_heuristic_value = -100
+
 
         else:
             Stability_heuristic_value = 0
