@@ -1,9 +1,8 @@
-import random
 import pygame
 import sys
 import cell
-from backend.player import AIPlayer, HumanPlayer
-from backend.board import ReversiBoard
+from player import AIPlayer, HumanPlayer
+from board import ReversiBoard
 from main_menu import MainMenu
 from front_board import Board
 
@@ -151,40 +150,6 @@ class GameUI:
         self.statusbar_message()
         pygame.display.flip()
 
-    # def handle_mouse_click_pva(self, event):
-    #     x, y = event.pos
-    #     col = x // self.square_size
-    #     row = y // self.square_size
-    #     if not(0 <= row < 8 and 0 <= col < 8):
-    #         print("Invalid move")
-    #     elif self.board.get_piece(row, col) == 'V':
-    #         Board.BOARD[row][col] = self.current_player
-    #         # sending the move to the reversi engine
-    #         self.reversi.makeMove(self.current_player, row, col)
-
-    #     self.current_player = self.reversi.whoseTurn
-
-
-
-    #     self.player1.makeAMove()
-
-    #     self.current_player = self.reversi.whoseTurn
-
-    #     # checking the buttons
-    #     if (row == 8) and (col == 0):
-    #         # home button
-    #         self.start()
-
-    #     if (row == 9) and (col == 0):
-    #         # restart button
-    #         self.start_game()
-
-    #     # Updating the whole board
-    #     self.board.set_board(self.reversi.getBoard())
-    #     if self.reversi.whoseTurn == 'W' or self.reversi.whoseTurn == 'B':
-    #         self.board.set_valid_moves(self.reversi.getValidMoves(self.current_player))
-    #     self.draw_board()
-
     def dummy_ai_move(self):
         # update the display
         pygame.display.flip()
@@ -197,18 +162,7 @@ class GameUI:
 
         self.reversi.print()
 
-        
-        # print("AI is thinking...")
-
-        
-        # ai_valid_moves = self.reversi.getValidMoves(self.current_player)
-        # if len(ai_valid_moves) > 0:
-        #     move = random.choice(ai_valid_moves)
-        #     self.reversi.makeMove(self.current_player, move[0], move[1])
-        # self.current_player = self.reversi.whoseTurn
-        
-
-        #     # Updating the whole board
+        # Updating the whole board
         self.board.set_board(self.reversi.getBoard())
         if self.reversi.whoseTurn == 'W' or self.reversi.whoseTurn == 'B':
             self.board.set_valid_moves(self.reversi.getValidMoves(self.reversi.whoseTurn))
