@@ -34,7 +34,9 @@ board_static_weights = [
 
 
 class GameHeuristics():
-    # giving weights that will be used to calculate each heauristics according to the importance during playing
+    # giving weights that will be used to calculate each heuristics according to the importance during playing
+    #maximum weight given to "corners captured" followed by "mobility"
+    #then "Stability" and finally "coin parity" as it does not affect much
     coinParity_weight = 0.05
     mobility_weight = 0.35
     stability_weight = 0.2
@@ -42,7 +44,8 @@ class GameHeuristics():
     def _init_(self):
        pass
 
-    #ulternative function to calculate the utility value of heuristic
+
+    #alternative function to calculate the utility value of heuristic
     #calculate the value based on adding together the weights of the squares in which the player’s coins are present.
     def utility(self,board ,player):
         #get the white coins locations
@@ -74,6 +77,8 @@ class GameHeuristics():
         return utility_scaled_value
 
 
+    #This method is used to calculate the heuristics based on the coin parity
+    #The player who has the most coins on the board has higher value
     def coinParity(self, board, player):
         black_coins = 0
         white_coins = 0
@@ -98,6 +103,7 @@ class GameHeuristics():
 
 
         return coinParityValue
+
 
     #method is used to calculate the heuristic value based on the mobility.
     def mobility(self, board, player):
@@ -202,10 +208,124 @@ class GameHeuristics():
         return corners_value
 
 
+    # This method is used to calculate the heuristic value based on the stability of the coin
     def stability(self,board,player):
 
-        print('in progress')
-        return 1
+        #flag to be updated
+        #if the coin is stable it will be incremented by 1
+        #if the coin is semi-stable it will be 0
+        #if the coin is unstable it will be decremented by -1
+        max_stable = 0
+        min_stable = 0
+        max_semistable = 0
+        min_semistable = 0
+        max_unstable = 0
+        min_unstable = 0
+        max_player_stability_value = 0
+        min_player_stability_value = 0
+
+        for row in board: #iterating through rows
+            for item in row: #iterating through col to get the items
+                if(item == player):
+
+                    #Case 1: the coin is in the corner then it's definetly stable
+
+                    if ((row == 0 or row == 7) and (item == 0 or item ==7)):
+                        max_stable += 1
+
+                    #Case 2: if the coin is found in the edges of the board we need to check
+                    #that it has an adjacent element of its color to be stable
+
+                    elif (row == 0 or row == 7 or item == 0 or item == 7):
+                        if(row == 7):
+                            if(board[row-1][item]== player):  #check item at [6,any column]
+                                max_stable += 1
+                        if (row == 0):
+                            if (board[row + 1][item] == player): #check item at [1,any column]
+                                max_stable += 1
+                        if (item == 7):
+                            if (board[row][item-1] == player): #check item at [any row,6]
+                                max_stable += 1
+                        if (item == 0):
+                            if (board[row][item+1] == player): #check item at [any row,1]
+                                max_stable += 1
+
+
+                    # Sample for the cases that can be stable in case max player is W
+                    # W        #     W     #    W     #   W
+                    # W "W"    # "W" W     # W "W"    #  "W" W
+                    # W        #     W     #    W     #   W
+
+                    elif (((board[row-1][item-1]==player)and(board[row][item-1]==player)and(board[row+1][item-1]==player))or
+                          ((board[row-1][item+1]==player)and(board[row][item+1]==player)and(board[row+1][item+1]==player))or
+                          ((board[row-1][item]==player)and(board[row][item-1]==player)and(board[row+1][item]==player))or
+                          (((board[row-1][item]==player)and(board[row][item+1]==player)and(board[row+1][item]==player)))):
+                        max_stable += 1
+
+                    #checking if the coin can be unstable in future moves
+                    elif any(board[i][j] == " " for i in range(row - 1, row + 2) for j in range(item - 1, item + 2)):
+                        max_semistable += 0
+
+                    #any case other than those handled before will be unstable
+                    else:
+                        max_unstable -= 1
+
+                elif ((item != player) and (item != ' ')):
+                    player_list = [player," "]
+
+                    # case 1: the coin is in the corner then it's definetly stable
+
+                    if ((row == 0 or row == 7) and (item == 0 or item == 7)):
+                        min_stable += 1
+
+                    # if the coin is found in the edges of the board we need to check
+                    # that it has an adjacent element of its color to be stable
+
+                    elif (row == 0 or row == 7 or item == 0 or item == 7):
+                        if (row == 7):
+                            if (board[row - 1][item] not in player_list):  # check item at [6,any column]
+                                min_stable += 1
+                        if (row == 0):
+                            if (board[row + 1][item] not in player_list):  # check item at [1,any column]
+                                min_stable += 1
+                        if (item == 7):
+                            if (board[row][item - 1] not in player_list):  # check item at [any row,6]
+                                min_stable += 1
+                        if (item == 0):
+                            # == ((item != player) and (item != ' ')) may be needed
+                            if (board[row][item + 1] not in player_list):  # check item at [any row,1]
+                                min_stable += 1
+
+                    #Sample for the cases that can be stable in case min player is B
+                    # B        #     B     #    B     #   B
+                    # B "B"    # "B" B     # B "B"    #  "B" B
+                    # B        #     B     #    B     #   B
+
+                    elif (((board[row-1][item-1] not in player_list)and(board[row][item-1] not in player_list)and(board[row+1][item-1]not in player_list))or
+                          ((board[row-1][item+1] not in player_list)and(board[row][item+1] not in player_list)and(board[row+1][item+1]not in player_list))or
+                          ((board[row-1][item] not in player_list)and(board[row][item-1] not in player_list)and(board[row+1][item]not in player_list))or
+                          (((board[row-1][item] not in player_list)and(board[row][item+1] not in player_list)and(board[row+1][item]not in player_list)))):
+                        min_stable += 1
+
+                    #checking if the coin will be unstabel in future moves
+
+                    elif any(board[i][j] == " " for i in range(row - 1, row + 2) for j in range(item - 1, item + 2)):
+                        min_semistable += 0
+
+                    #any case other than those handled before will be unstable
+                    else:
+                        min_unstable -= 1
+
+        max_player_stability_value = max_stable + max_unstable + max_semistable
+        min_player_stability_value = min_stable + min_unstable + min_semistable
+
+        if ((max_player_stability_value + min_player_stability_value) != 0):
+            Stability_heuristic_value = 100 * ((max_player_stability_value - min_player_stability_value ) /(max_player_stability_value+ min_player_stability_value))
+        else:
+            Stability_heuristic_value = 0
+
+        return Stability_heuristic_value
+
 
     #method to Compute a heuristic value for an Othello board state based on a combination of factors,
     #including piece count, mobility, stability, and corners captured.
