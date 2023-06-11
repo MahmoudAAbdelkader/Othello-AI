@@ -137,7 +137,7 @@ class AIPlayer(Player):
 
         import time
 
-        minimum_execution_time = 1
+        minimum_execution_time = 1 # The minimum execution time in seconds
 
         # Get the current time
         start_time = time.time()
@@ -161,54 +161,54 @@ class AIPlayer(Player):
 #                                                This is a simple test for the players classes                                                                             # 
 ############################################################################################################################################################################
 
-import random
+# import random
 
-myBoard = ReversiBoard()
+# myBoard = ReversiBoard()
 
-myBoard.setTheFirstPlayer("B")
+# myBoard.setTheFirstPlayer("B")
 
-myBoard.print()
-print()
-
-
-#Creating the players
-player1 = HumanPlayer("B", myBoard)
-player2 = AIPlayer("W", myBoard , "medium")
-
-#Setting the human player's lambda function
-getCoordinates = lambda player: random.choice(myBoard.getValidMoves(player.get_color()))
-
-player1.setLambda(getCoordinates)
+# myBoard.print()
+# print()
 
 
-#Testing the players' colors
-print(player1.get_color())
-print(player2.get_color())
-print()
+# #Creating the players
+# player1 = HumanPlayer("B", myBoard)
+# player2 = AIPlayer("W", myBoard , "medium")
 
-#Players Map:
-playersMap = {"B":player1, "W":player2}
+# #Setting the human player's lambda function
+# getCoordinates = lambda player: random.choice(myBoard.getValidMoves(player.get_color()))
 
-listOfTurns = []
-num = lambda x: 1 if x == "B" else 0
-while(not myBoard.isGameOver()):
+# player1.setLambda(getCoordinates)
+
+
+# #Testing the players' colors
+# print(player1.get_color())
+# print(player2.get_color())
+# print()
+
+# #Players Map:
+# playersMap = {"B":player1, "W":player2}
+
+# listOfTurns = []
+# num = lambda x: 1 if x == "B" else 0
+# while(not myBoard.isGameOver()):
    
-   whoseTurn = myBoard.getWhoseTurn()
+#    whoseTurn = myBoard.getWhoseTurn()
 
-   print("It's " + whoseTurn + "'s turn")
-   listOfTurns.append(num(whoseTurn))
-   playersMap[whoseTurn].makeAMove()
+#    print("It's " + whoseTurn + "'s turn")
+#    listOfTurns.append(num(whoseTurn))
+#    playersMap[whoseTurn].makeAMove()
 
-   myBoard.print()
+#    myBoard.print()
    
-   print()
+#    print()
 
 
-print("Game Over!")
-print("The winner is " + myBoard.getWinner())
+# print("Game Over!")
+# print("The winner is " + myBoard.getWinner())
 
    
-print("Here is the list of turns: " , "\n", listOfTurns)
+# print("Here is the list of turns: " , "\n", listOfTurns)
     
     
    
