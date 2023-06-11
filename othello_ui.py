@@ -2,8 +2,8 @@ import random
 import pygame
 import sys
 import cell
-from backend.player import AIPlayer, HumanPlayer
-from backend.board import ReversiBoard
+from player import AIPlayer, HumanPlayer
+from board import ReversiBoard
 from main_menu import MainMenu
 from front_board import Board
 

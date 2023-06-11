@@ -261,6 +261,7 @@ class ReversiBoard:
         #create new object
         reversedBoard = ReversiBoard()
         reversedBoard.board = deepcopy(self.board)
+        reversedBoard.whoseTurn = deepcopy(self.whoseTurn)
         return reversedBoard
     
     
