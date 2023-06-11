@@ -18,7 +18,6 @@ board = [
 
 
 #static weight associated to each coin position
-
 board_static_weights = [
     [4, -3, 2, 2, 2, 2, -3, 4],
     [-3, -4, -1, -1, -1, -1, -4, -3],
@@ -39,6 +38,38 @@ class GameHeuristics():
     cornersCaptured_weight = 0.4
     def _init_(self):
        pass
+
+    #ulternative function to calculate the utility value of heuristic
+    #calculate the value based on adding together the weights of the squares in which the player’s coins are present.
+    def utility(self,board ,player):
+        #get the white coins locations
+        white_locations = board.getLocations("W")
+        #get the black coins locations
+        black_locations = board.getLocations("B")
+        #initialized white and black values
+        white_coins_value =0
+        black_coins_value =0
+        #calculate the white coins values
+        for location in white_locations:
+            row, col = location
+            white_coins_value += board_static_weights[row][col]
+        #calculate the black coins values
+        for location in black_locations:
+            row, col = location
+            black_coins_value += board_static_weights[row][col]
+        #calculate white & black coins total utlity value
+        white_utility_value = white_coins_value - black_coins_value
+        black_utility_value = black_coins_value - white_coins_value
+
+        #Scale the utility value to range from -100 to 100
+        if(player == "W"):
+            utility_scaled_value = 100 * (2 * (white_utility_value - black_utility_value) - (white_utility_value - black_utility_value - 2 * abs(white_utility_value))) / (white_utility_value - black_utility_value)
+
+        elif(player == "B"):
+            utility_scaled_value = 100 * (2 * (black_utility_value - white_utility_value) - (black_utility_value - white_utility_value - 2 * abs(black_utility_value))) / (black_utility_value - white_utility_value)
+
+        return utility_scaled_value
+
 
     def coinParity(self, board, player):
         black_coins = 0
@@ -65,15 +96,16 @@ class GameHeuristics():
 
         return coinParityValue
 
-
+    #method is used to calculate the heuristic value based on the mobility.
     def mobility(self, board, player):
         mobility_value = 0
         #counting the number of valid moves for each color
         white_actual_mobility = len(board.getValidMoves("W"))
         black_actual_mobility = len(board.getValidMoves("B"))
+        #check the total moves value
         if white_actual_mobility + black_actual_mobility == 0:
             mobility_value = 0
-
+        #calculate the mobility value
         if(player == "W"):
             mobility_value = 100*(white_actual_mobility - black_actual_mobility)/(white_actual_mobility + black_actual_mobility)
         elif (player == "B"):
@@ -83,17 +115,20 @@ class GameHeuristics():
 
 
     #method is used to calculate the heuristic value based on the corner captured.
+    #by determining the actual captured corners and the potential captured corners
     def cornersCaptured(self,board ,player):
-
+        #Actual captured corners
+        #assign weights to actual and potential corners
         actual_corners_weight = 0.8
         potential_corners_weight = 0.2
         board_coins = self.board.getBoard()
-
+        #initialize actual corners value for black and weight
         white_actual_corners_count = 0
         black_actual_corners_count = 0
-
+        #initialize the total actual corners
         actualcornersCaptured_value=0
-
+        #counting each captured corner for black and white_score
+        #by checking each corner in the board
         if board_coins[0][0] == "W":
             white_actual_corners_count  += 1
         elif board_coins[0][0] == "B":
@@ -114,21 +149,24 @@ class GameHeuristics():
         elif board_coins[7][7] == "B":
             black_actual_corners_count += 1
 
-
+        #calculate the total actual corner value
         if white_actual_corners_count + black_actual_corners_count != 0:
             if(player == "W"):
                 actualcornersCaptured_value = 100 * (white_actual_corners_count - black_actual_corners_count) / (white_actual_corners_count + black_actual_corners_count)
             elif(player == "B"):
                 actualcornersCaptured_value = 100 * (black_actual_corners_count - white_actual_corners_count) / (black_actual_corners_count + white_actual_corners_count)
 
+        #potential captured corners
+        #initialize actual corners value for black and weight
         potential_black_corners = 0
         potential_white_corners = 0
+        #initialize the total actual corners
         potentailcornersCaptured_value=0
-
+        #get the valid next moves for each black and white
         white_valid_moves = board.getValidMoves("W")
         Black_valid_moves = board.getValidMoves("B")
 
-    # Check potential corners for white
+    # Check and count potential corners for white
         for move in white_valid_moves:
             if move == [0,0]:
                 potential_white_corners += 1
@@ -139,7 +177,7 @@ class GameHeuristics():
             elif move == [7, 7]:
                 potential_white_corners += 1
 
-        # Check potential corners for black
+        # Check and count potential corners for black
         for move in Black_valid_moves:
             if move == [0, 0]:
                 potential_black_corners += 1
@@ -149,17 +187,16 @@ class GameHeuristics():
                 potential_black_corners += 1
             elif move == [7, 7]:
                 potential_black_corners += 1
-
+        #calculate the total potential captured corners value
         if potential_black_corners + potential_white_corners != 0:
             if(player == "W"):
                 potentailcornersCaptured_value = 100 * (potential_white_corners - potential_black_corners) / (potential_white_corners + potential_black_corners)
             elif(player == "B"):
                 potentailcornersCaptured_value = 100 * (potential_black_corners - potential_white_corners) / (potential_black_corners + potential_white_corners)
-
+        # calculate the total value of both actual and potential captured vlue
         corners_value = 100 * (actual_corners_weight * actualcornersCaptured_value + potential_corners_weight * potentailcornersCaptured_value)
 
         return corners_value
-
 
 
     def stability(self,board,player):
