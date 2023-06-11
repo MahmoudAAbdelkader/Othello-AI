@@ -33,7 +33,7 @@ class Player:
        self.color = color
        self.board = board #The board is set by reference to avoid copying the board and to allow the player to make changes to the board
        
-       
+       self.lambdaFunc = None
     
     # The method that returns the player's color
     def get_color(self):
@@ -50,7 +50,8 @@ class Player:
     def makeAMove(self):
        pass
 
-
+    def setLambda(self, lambdaFunc):
+        self.lambdaFunc = lambdaFunc
 ############################################################################################################################################################################
 #                                                 Human Player Class                                                                                                       #
 ############################################################################################################################################################################
@@ -64,7 +65,7 @@ class HumanPlayer(Player):
     # If the board is not in its initial state, it raises a ValueError
     def __init__(self, color:str, board : ReversiBoard):
         super().__init__(color, board) # Calling the base class constructor
-        self.lambdaFunc = None
+        # self.lambdaFunc = None
     
     # This method is responsible for the human player's moves
     # If the move is invalid, it raises a ValueError
@@ -80,8 +81,8 @@ class HumanPlayer(Player):
 
        return self.board
 
-    def setLambda(self, lambdaFunc):
-        self.lambdaFunc = lambdaFunc
+    # def setLambda(self, lambdaFunc):
+    #     self.lambdaFunc = lambdaFunc
     
 ############################################################################################################################################################################
 #                                                 AI Player Class                                                                                                       #
@@ -131,8 +132,22 @@ class AIPlayer(Player):
         validMoves = self.board.getValidMoves(self.color)
 
         import random
+        import time
 
+        minimum_execution_time = 1
+
+        # Get the current time
+        start_time = time.time()
         randomMove = random.choice(validMoves)
+        end_time = time.time()
+
+        # Calculate the execution time
+        execution_time = end_time - start_time
+        
+        # If the execution time is less than the minimum execution time, sleep for the difference
+        # if(execution_time < minimum_execution_time):
+        #     time.sleep(minimum_execution_time - execution_time)
+        
         self.board.makeMove(self.color, randomMove[0], randomMove[1])
 
 
@@ -168,12 +183,14 @@ print()
 #Players Map:
 playersMap = {"B":player1, "W":player2}
 
+listOfTurns = []
+num = lambda x: 1 if x == "B" else 0
 while(not myBoard.isGameOver()):
    
    whoseTurn = myBoard.getWhoseTurn()
 
    print("It's " + whoseTurn + "'s turn")
-   
+   listOfTurns.append(num(whoseTurn))
    playersMap[whoseTurn].makeAMove()
 
    myBoard.print()
@@ -185,7 +202,7 @@ print("Game Over!")
 print("The winner is " + myBoard.getWinner())
 
    
-
+print("Here is the list of turns: " , "\n", listOfTurns)
     
     
    

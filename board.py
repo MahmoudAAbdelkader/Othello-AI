@@ -70,6 +70,8 @@ class ReversiBoard:
     [" ", " ", " ", " ", " ", " ", " ", " "],
     [" ", " ", " ", " ", " ", " ", " ", " "]
 ]
+        self.whoseTurn = "B"
+
     # This method is used as a getter to the 2D array that represents the board.
     def getBoard(self):
         return deepcopy(self.board) # We use deepcopy to return a copy of the board, not a reference to it.
