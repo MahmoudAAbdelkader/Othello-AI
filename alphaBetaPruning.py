@@ -52,9 +52,6 @@ class AlphaBetaPruningStrategy(Strategy):
     
 
     def __evaluateBoard(board: ReversiBoard,player):
-            # print("Board to Evaluate: ")
-           # time.sleep(5)
-           #  board.print()
             hueristicsObj = heuristics.GameHeuristics()
             coin_parity = hueristicsObj.coinParity(board,maximixingPlayer)
             
@@ -65,13 +62,6 @@ class AlphaBetaPruningStrategy(Strategy):
             
             combinedHeuristic = hueristicsObj.combinedHeuristics(board,maximixingPlayer)
 
-            # print(f"Coin Parity = {coin_parity}")
-            # print("stability = ",stability)
-            # print(f"Mobility = {mobility}")
-            # print(f"Corners Captured = {cornersCaptured}")
-            # print(f"Utility = {utility}")
-            # print(f"Combined Heuristic = {combinedHeuristic}")
-           # time.sleep(5)
             
             if(utility > 100 or utility < -100):
                 raise Exception("Utility is greater than 100 or less than -100")
