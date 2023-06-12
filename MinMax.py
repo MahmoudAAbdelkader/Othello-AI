@@ -18,8 +18,14 @@
 from strategy import Strategy
 from board import ReversiBoard
 import math
+import heuristics
+import time
+
+
+maximixingPlayer = None
 
 class MinMaxStrategy(Strategy):
+    difficulty = None
 
 
     ##############################################################################################################################    
@@ -39,13 +45,40 @@ class MinMaxStrategy(Strategy):
     ##############################################################################################################################   
 
     def evaluateBoard(board: ReversiBoard,player):
-        if(player == "W"):
-            return len(board.getLocations("W")) - len(board.getLocations("B"))
-        else:
-            return len(board.getLocations("B")) - len(board.getLocations("W"))
         
-       
-      
+        if(MinMaxStrategy.difficulty == "easy"):
+            return board.getScore(maximixingPlayer) - board.getScore(board.getOpponent(maximixingPlayer))
+        
+        hueristicsObj = heuristics.GameHeuristics()
+        coin_parity = hueristicsObj.coinParity(board,maximixingPlayer)
+        
+        mobility = hueristicsObj.mobility(board,maximixingPlayer)
+        cornersCaptured = hueristicsObj.cornersCaptured(board,maximixingPlayer)
+        stability = hueristicsObj.stability(board,maximixingPlayer)
+        utility = hueristicsObj.utility(board,maximixingPlayer)
+        
+        combinedHeuristic = hueristicsObj.combinedHeuristics(board,maximixingPlayer)
+        
+        if(utility > 100 or utility < -100):
+            raise Exception("Utility is greater than 100 or less than -100")
+        
+        if(coin_parity > 100 or coin_parity < -100):
+            raise Exception("Coin Parity is greater than 100 or less than -100")
+        
+        if(stability > 100 or stability < -100):
+            raise Exception("Stability is greater than 100 or less than -100")
+        
+        if(mobility > 100 or mobility < -100):
+            raise Exception("Mobility is greater than 100 or less than -100")
+        
+        if(cornersCaptured > 100 or cornersCaptured < -100):
+            raise Exception("Corners Captured is greater than 100 or less than -100")
+        
+        # return utility
+        return combinedHeuristic
+        
+    #     return combinedHeuristic
+
     ##############################################################################################################################
     
     # Method Name: getBestMove
@@ -63,6 +96,13 @@ class MinMaxStrategy(Strategy):
     ##############################################################################################################################
     def getBestMove(boardToGetBestMove : ReversiBoard,player,depth):
         
+        global maximixingPlayer
+        print(f"Maximizing Player = {maximixingPlayer}")
+        maximixingPlayer = player
+        print(f"Maximizing Player = {maximixingPlayer}")
+        super().getBestMove(boardToGetBestMove,player,depth)
+
+
         if (boardToGetBestMove.isGameOver()):
             return None
 

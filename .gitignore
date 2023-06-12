@@ -1,2 +1,5 @@
 __pycache__
 backend/
+heuristics.py
+log.txt
+utility.py

@@ -10,6 +10,8 @@
 
 # Importing the necessary modules
 from board import ReversiBoard
+from MinMax import MinMaxStrategy
+from alphaBetaPruning import AlphaBetaPruningStrategy
 
 ############################################################################################################################################################################
 #                                                    Player Class                                                                                                          #
@@ -131,78 +133,82 @@ class AIPlayer(Player):
         #FIXME: Call the AI strategy object here
         validMoves = self.board.getValidMoves(self.color)
 
-        import random
+        difficultyToDepthMap = {"easy": 1, "medium": 3, "hard": 5}
+
         import time
 
-        minimum_execution_time = 1
+        minimum_execution_time = 1 # The minimum execution time in seconds
 
         # Get the current time
         start_time = time.time()
-        randomMove = random.choice(validMoves)
+    
+        bestMove = AlphaBetaPruningStrategy.getBestMove(self.board, self.color, difficultyToDepthMap[self.difficulty])
+        print("difficulty = ", self.difficulty, "depth = ", difficultyToDepthMap[self.difficulty], "bestMove = ", bestMove, "validMoves = ", validMoves, "color = ", self.color, "board = ", self.board, sep = "\n")
         end_time = time.time()
 
         # Calculate the execution time
         execution_time = end_time - start_time
         
         # If the execution time is less than the minimum execution time, sleep for the difference
-        # if(execution_time < minimum_execution_time):
-        #     time.sleep(minimum_execution_time - execution_time)
+        if(execution_time < minimum_execution_time):
+            time.sleep(minimum_execution_time - execution_time)
         
-        self.board.makeMove(self.color, randomMove[0], randomMove[1])
+        self.board.makeMove(self.color, bestMove[0], bestMove[1])
 
 
 
 ############################################################################################################################################################################
 #                                                This is a simple test for the players classes                                                                             # 
 ############################################################################################################################################################################
-import random
 
-myBoard = ReversiBoard()
+# import random
 
-myBoard.setTheFirstPlayer("B")
+# myBoard = ReversiBoard()
 
-myBoard.print()
-print()
+# myBoard.setTheFirstPlayer("B")
+
+# myBoard.print()
+# print()
 
 
-#Creating the players
-player1 = HumanPlayer("B", myBoard)
-player2 = AIPlayer("W", myBoard , "easy")
+# #Creating the players
+# player1 = HumanPlayer("B", myBoard)
+# player2 = AIPlayer("W", myBoard , "medium")
 
-#Setting the human player's lambda function
-getCoordinates = lambda player: random.choice(myBoard.getValidMoves(player.get_color()))
+# #Setting the human player's lambda function
+# getCoordinates = lambda player: random.choice(myBoard.getValidMoves(player.get_color()))
 
-player1.setLambda(getCoordinates)
+# player1.setLambda(getCoordinates)
 
 
 #Testing the players' colors
-print(player1.get_color())
-print(player2.get_color())
-print()
+# print(player1.get_color())
+# print(player2.get_color())
+# print()
 
-#Players Map:
-playersMap = {"B":player1, "W":player2}
+# #Players Map:
+# playersMap = {"B":player1, "W":player2}
 
-listOfTurns = []
-num = lambda x: 1 if x == "B" else 0
-while(not myBoard.isGameOver()):
+# listOfTurns = []
+# num = lambda x: 1 if x == "B" else 0
+# while(not myBoard.isGameOver()):
    
-   whoseTurn = myBoard.getWhoseTurn()
+#    whoseTurn = myBoard.getWhoseTurn()
 
-   print("It's " + whoseTurn + "'s turn")
-   listOfTurns.append(num(whoseTurn))
-   playersMap[whoseTurn].makeAMove()
+#    print("It's " + whoseTurn + "'s turn")
+#    listOfTurns.append(num(whoseTurn))
+#    playersMap[whoseTurn].makeAMove()
 
-   myBoard.print()
+#    myBoard.print()
    
-   print()
+#    print()
 
 
-print("Game Over!")
-print("The winner is " + myBoard.getWinner())
+# print("Game Over!")
+# print("The winner is " + myBoard.getWinner())
 
    
-print("Here is the list of turns: " , "\n", listOfTurns)
+# print("Here is the list of turns: " , "\n", listOfTurns)
     
     
    
