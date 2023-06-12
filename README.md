@@ -113,6 +113,9 @@ python othello_ui.py
 
 ### Run From Executable
 
+1. Link to download Executable
+   https://drive.google.com/drive/folders/1HjjIlFgqn3WObba6G21clQ-fURY9Wk29
+
 ### Game Manual
 
 1. Choose the game mode and difficulty level
