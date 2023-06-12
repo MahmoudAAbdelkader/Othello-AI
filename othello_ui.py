@@ -29,7 +29,6 @@ class GameUI:
         self.statusbar_height = 2 * self.square_size
         self.statusbar_width = self.screen_width
         
-
         self.screen = pygame.display.set_mode(
             (self.screen_width, self.screen_height), pygame.RESIZABLE)
         self.clock = pygame.time.Clock()
@@ -44,7 +43,7 @@ class GameUI:
         self.statusbar.fill(pygame.Color('gray'))
 
         # Default game mode
-        self.game_mode = "VS Player"
+        self.game_mode = "VS AI"
         self.difficulty = "easy"
 
     def update_screen_dimensions(self, width, height):
@@ -124,7 +123,7 @@ class GameUI:
         self.player2.setLambda(lambda x:(row,col))
 
         if not(0 <= row < 8 and 0 <= col < 8):
-            print("Invalid move")
+            pass
         elif self.board.get_piece(row, col) == 'V':
             Board.BOARD[row][col] = self.current_player
             self.playerMap[self.current_player].makeAMove()
@@ -140,16 +139,12 @@ class GameUI:
         self.statusbar_message()
         pygame.display.flip()
 
-    def dummy_ai_move(self):
+    def ai_move(self):
         # update the display
         pygame.display.flip()
 
         self.current_player = self.reversi.whoseTurn
-
         self.playerMap[self.current_player].makeAMove()
-
-        print("AI MOVE DONE")
-
         self.reversi.print()
 
         # Updating the whole board
@@ -176,10 +171,10 @@ class GameUI:
             # Update the current player
             self.current_player = self.reversi.whoseTurn
             
-            # If it's AI's turn, call the dummy_ai_move function
+            # If it's AI's turn, call the ai_move function
             if not(self.reversi.isGameOver()):
                 if (mode == "PVA" and self.current_player == "W") or mode == "AVA":
-                    self.dummy_ai_move() 
+                    self.ai_move() 
                     continue
 
             # Handle events
@@ -211,13 +206,9 @@ class GameUI:
                             continue
             self.clock.tick(60)
 
-    # the main AVA game loop
-    def run_ava(self):
-        pass
-
     def start(self):
         # Reset the game mode to default
-        self.game_mode = "VS Player"
+        self.game_mode = "VS AI"
         self.difficulty = "easy"
         # Update the screen
         pygame.display.set_caption("Othello")
