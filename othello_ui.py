@@ -139,20 +139,6 @@ class GameUI:
         self.statusbar_message()
         pygame.display.flip()
 
-    def ai_move(self):
-        # update the display
-        pygame.display.flip()
-
-        self.current_player = self.reversi.whoseTurn
-        self.playerMap[self.current_player].makeAMove()
-        self.reversi.print()
-
-        # Updating the whole board
-        self.board.set_board(self.reversi.getBoard())
-        if self.reversi.whoseTurn == 'W' or self.reversi.whoseTurn == 'B':
-            self.board.set_valid_moves(self.reversi.getValidMoves(self.reversi.whoseTurn))
-        self.draw_board()
-
     # The main game loop for each game mode
     # mode: PVP, PVA, AVA
     # if the current player is AI, call MAKEAMOVE function from the player class
@@ -205,6 +191,20 @@ class GameUI:
                             self.handle_mouse_click_pvp(row,col)
                             continue
             self.clock.tick(60)
+
+    def ai_move(self):
+        # update the display
+        pygame.display.flip()
+
+        self.current_player = self.reversi.whoseTurn
+        self.playerMap[self.current_player].makeAMove()
+        self.reversi.print()
+
+        # Updating the whole board
+        self.board.set_board(self.reversi.getBoard())
+        if self.reversi.whoseTurn == 'W' or self.reversi.whoseTurn == 'B':
+            self.board.set_valid_moves(self.reversi.getValidMoves(self.reversi.whoseTurn))
+        self.draw_board()
 
     def start(self):
         # Reset the game mode to default
