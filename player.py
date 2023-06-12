@@ -142,7 +142,7 @@ class AIPlayer(Player):
         # Get the current time
         start_time = time.time()
     
-        bestMove = MinMaxStrategy.getBestMove(self.board, self.color, difficultyToDepthMap[self.difficulty])
+        bestMove = AlphaBetaPruningStrategy.getBestMove(self.board, self.color, difficultyToDepthMap[self.difficulty])
         print("difficulty = ", self.difficulty, "depth = ", difficultyToDepthMap[self.difficulty], "bestMove = ", bestMove, "validMoves = ", validMoves, "color = ", self.color, "board = ", self.board, sep = "\n")
         end_time = time.time()
 
@@ -181,7 +181,7 @@ class AIPlayer(Player):
 # player1.setLambda(getCoordinates)
 
 
-# #Testing the players' colors
+#Testing the players' colors
 # print(player1.get_color())
 # print(player2.get_color())
 # print()

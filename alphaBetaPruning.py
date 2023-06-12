@@ -26,7 +26,10 @@
 from board import ReversiBoard
 from strategy import Strategy
 import math
+import heuristics
 
+
+maximixingPlayer = None
 
 class AlphaBetaPruningStrategy(Strategy):
     
@@ -49,10 +52,45 @@ class AlphaBetaPruningStrategy(Strategy):
     
 
     def __evaluateBoard(board: ReversiBoard,player):
-        if(player == "W"):
-            return len(board.getLocations("W")) - len(board.getLocations("B"))
-        else:
-            return len(board.getLocations("B")) - len(board.getLocations("W"))
+            # print("Board to Evaluate: ")
+           # time.sleep(5)
+           #  board.print()
+            hueristicsObj = heuristics.GameHeuristics()
+            coin_parity = hueristicsObj.coinParity(board,maximixingPlayer)
+            
+            mobility = hueristicsObj.mobility(board,maximixingPlayer)
+            cornersCaptured = hueristicsObj.cornersCaptured(board,maximixingPlayer)
+            stability = hueristicsObj.stability(board,maximixingPlayer)
+            utility = hueristicsObj.utility(board,maximixingPlayer)
+            
+            combinedHeuristic = hueristicsObj.combinedHeuristics(board,maximixingPlayer)
+
+            # print(f"Coin Parity = {coin_parity}")
+            # print("stability = ",stability)
+            # print(f"Mobility = {mobility}")
+            # print(f"Corners Captured = {cornersCaptured}")
+            # print(f"Utility = {utility}")
+            # print(f"Combined Heuristic = {combinedHeuristic}")
+           # time.sleep(5)
+            
+            if(utility > 100 or utility < -100):
+                raise Exception("Utility is greater than 100 or less than -100")
+            
+            if(coin_parity > 100 or coin_parity < -100):
+                raise Exception("Coin Parity is greater than 100 or less than -100")
+            
+            if(stability > 100 or stability < -100):
+                raise Exception("Stability is greater than 100 or less than -100")
+            
+            if(mobility > 100 or mobility < -100):
+                raise Exception("Mobility is greater than 100 or less than -100")
+            
+            if(cornersCaptured > 100 or cornersCaptured < -100):
+                raise Exception("Corners Captured is greater than 100 or less than -100")
+            
+            # return utility
+            return combinedHeuristic
+
         
     ##############################################################################################################################
         
@@ -74,6 +112,12 @@ class AlphaBetaPruningStrategy(Strategy):
     
     
     def getBestMove(boardToGetBestMove : ReversiBoard,player,depth):
+        
+        global maximixingPlayer
+        print(f"Maximizing Player = {maximixingPlayer}")
+        maximixingPlayer = player
+        print(f"Maximizing Player = {maximixingPlayer}")
+        # super().getBestMove(boardToGetBestMove,player,depth)
         
         # If the game is over, then return None.
         if (boardToGetBestMove.isGameOver()):
@@ -100,10 +144,21 @@ class AlphaBetaPruningStrategy(Strategy):
 
             # Make the move on the new board.
             newBoard.makeMove(player,move[0],move[1])
+            
 
-
+            # print("*****************************************************************************************************")
+            # print("Player is : ", player)
+            # print("Player opponent is : ", newBoard.getOpponent(player))
+            # print(newBoard)
+            # print(boardToGetBestMove)
+            # # check if the object is deep copied or not
+            # print(id(newBoard)== id(boardToGetBestMove))
+            # print(id(newBoard.whoseTurn)== id(boardToGetBestMove.whoseTurn))
+            # print("*****************************************************************************************************")
+            
+            
             # Call the alphabeta pruning algorithm to get the score for the move (The heuristics ).               
-            score = AlphaBetaPruningStrategy.alphaBetaPruning(newBoard,player,depth-1,False,-math.inf,math.inf)
+            score = AlphaBetaPruningStrategy.alphaBetaPruning(newBoard,boardToGetBestMove.getOpponent(player),depth-1,False,-math.inf,math.inf)
             
             # If the score is better than the best score, then update the best score and the best move.
             if(bestScore == None or score > bestScore):
@@ -165,7 +220,7 @@ class AlphaBetaPruningStrategy(Strategy):
                 newBoard.makeMove(player,move[0],move[1])
                 
                 # Call the alphabeta pruning algorithm to get the score for the move (The heuristics ).
-                score = AlphaBetaPruningStrategy.alphaBetaPruning(newBoard,player,depth-1,False,alpha,beta)
+                score = AlphaBetaPruningStrategy.alphaBetaPruning(newBoard,board.getOpponent(player),depth-1,False,alpha,beta)
                 
                 # Update the best score.
                 bestScore = max(bestScore,score)
@@ -197,7 +252,7 @@ class AlphaBetaPruningStrategy(Strategy):
                 newBoard.makeMove(player,move[0],move[1])
                 
                 # Call the alphabeta pruning algorithm to get the score for the move (The heuristics ).
-                score = AlphaBetaPruningStrategy.alphaBetaPruning(newBoard,player,depth-1,True,alpha,beta)
+                score = AlphaBetaPruningStrategy.alphaBetaPruning(newBoard,board.getOpponent(player),depth-1,True,alpha,beta)
                 
                 # Update the best score to the minimum of the current best score and the score.
                 bestScore = min(bestScore,score)

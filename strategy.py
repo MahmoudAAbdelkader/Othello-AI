@@ -9,14 +9,17 @@
 
 
 # This is just an interface for the strategies (AlphaBetaPruning, MinMax)
-
+maximixingPlayer = None
 from board import ReversiBoard
 
 class Strategy:
     def __init__(self):
+        
         pass
     
     def getBestMove(boardToGetBestMove : ReversiBoard,player,depth):
+        # global maximixingPlayer
+        # maximixingPlayer = player
         pass
     def evaluateBoard(board: ReversiBoard,player):
         pass
