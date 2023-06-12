@@ -115,6 +115,27 @@ python othello_ui.py
 
 ### Game Manual
 
+1. Choose the game mode and difficulty level
+
+![Game Mode](./imgs/menu.jpg)
+
+2. You Can resize the window as you like
+
+![Resizable](./imgs/resize.jpg)
+
+3. The Game has indicators for the valid moves as hollow circles
+4. There is a status bar (score board) that shows whose turn is it and both players' scores
+5. The game has **Home** & **Restart** buttons
+
+![Game](./imgs/sample.jpg)
+
+6. At the game end, the winner is announced
+
+![Game End](./imgs/winner.jpg)
+
+7. Enjoy the game! 😅 
+
+
 ## Contributors
 
 
