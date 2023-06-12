@@ -2,11 +2,32 @@
 
 This is a project for Artificial Intelligence 🤖 course CSE472 at ASU-FE.
 
+## Table of Contents
+- [Othello-AI](#othello-ai)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Game Description](#game-description)
+  - [Algorithms](#algorithms)
+    - [Game-Palying Algorithms](#game-palying-algorithms)
+    - [Heuristics](#heuristics)
+  - [The GUI](#the-gui)
+  - [User Manual](#user-manual)
+    - [Run From Source](#run-from-source)
+    - [Run From Executable](#run-from-executable)
+    - [Game Manual](#game-manual)
+  - [Contributors](#contributors)
+
+
 ## Introduction
 
 The project is an implementation of Othello (aka. Reversi) game 🎮 with an AI engine. 
 
 In this project, we will explore the game playing of Othello using search algorithms and heuristics. Othello is a two-player strategy game played on a 8x8 board, where each player has pieces that are either black or white. The goal of the game is to have the most pieces of your color on the board at the end of the game.
+
+The project is fully implemented using Python language.
+
+[![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)](https://www.python.org)
+
 
 For more information about the game, please refer to [Wikipedia](https://en.wikipedia.org/wiki/Reversi) 🌐.
 
@@ -32,7 +53,9 @@ Both of the AI modes has 3 difficulty levels:
 | Medium |
 | Hard |
 
-## Game Algorithms
+## Algorithms
+
+### Game-Palying Algorithms
 
 The game algorithms used in this project are:
 
@@ -45,9 +68,16 @@ tree until the timing constraints are violated)
 
 The Algorithms are implemented in [alphaBetaPruning.py](./backend/alphaBetaPruning.py) and [MinMax.py](./backend/MinMax.py).
 
-## Heuristics
+### Heuristics
 
-// TODO
+The heuristics function is a collection of more than one heuristic that mainly calculates the utility value of a position in the board and gives different weights to those heuristics and determines how good a particular state is for the player. 
+
+The heuristics used respectively according to weights: 
+
+1. Mobility
+2. Coin Parity
+3. Corners Captured
+4. Stability
 
 ## The GUI
 
@@ -57,7 +87,9 @@ The GUI is implemented using [PyGame](https://www.pygame.org/news) 🐍🎮 and 
 
 GUI main functions are implemented in [othello_ui.py](./othello_ui.py).
 
-## How to run the game
+## User Manual
+
+### Run From Source
 
 1. Clone the repo
 
@@ -79,4 +111,22 @@ pip install -r requirements.txt
 python othello_ui.py
 ```
 
+### Run From Executable
 
+### Game Manual
+
+## Contributors
+
+
+
+
+
+| Thanks for your contributions! 🎉🎉🎉 |
+| --- |
+| <div style="display: flex; align-items: center;"><img src="https://avatars.githubusercontent.com/hussameldin171?" width="100px;" alt=""/><div style="margin-left: 10px;"><a href="https://github.com/hussameldin171">Hussam ElDin Wael</a></div></div> |
+| <div style="display: flex; align-items: center;"><img src="https://avatars.githubusercontent.com/hishamyakan?" width="100px;" alt=""/><div style="margin-left: 10px;"><a href="https://github.com/hishamyakan">Hisham Yakan</a></div></div> |
+| <div style="display: flex; align-items: center;"><img src="https://avatars.githubusercontent.com/NadaAmgadSayed?" width="100px;" alt=""/><div style="margin-left: 10px;"><a href="https://github.com/NadaAmgadSayed">Nada Amgad</a></div></div> |
+| <div style="display: flex; align-items: center;"><img src="https://avatars.githubusercontent.com/NadaYousseff?" width="100px;" alt=""/><div style="margin-left: 10px;"><a href="https://github.com/NadaYousseff">Nada Youssef</a></div></div> |
+| <div style="display: flex; align-items: center;"><img src="https://avatars.githubusercontent.com/AhmedAlaa50?" width="100px;" alt=""/><div style="margin-left: 10px;"><a href="https://github.com/AhmedAlaa50">Ahmed Alaa</a></div></div> |
+| <div style="display: flex; align-items: center;"><img src="https://avatars.githubusercontent.com/MahmoudAAbdelkader?" width="100px;" alt=""/><div style="margin-left: 10px;"><a href="https://github.com/MahmoudAAbdelkader">Mahmoud Abdelkader</a></div></div> |
+| <div style="display: flex; align-items: center;"><img src="https://avatars.githubusercontent.com/Mo3az2000?" width="100px;" alt=""/><div style="margin-left: 10px;"><a href="https://github.com/Mo3az2000">Moaaz Hamdy</a></div></div> |
