@@ -114,7 +114,7 @@ python othello_ui.py
 ### Run From Executable
 
 1. Link to download Executable
-   https://drive.google.com/drive/folders/1HjjIlFgqn3WObba6G21clQ-fURY9Wk29
+   https://drive.google.com/file/d/1BXqDuNrmxMqsOJjRYG02ambU2Jkqq62a/view
 
 ### Game Manual
 
