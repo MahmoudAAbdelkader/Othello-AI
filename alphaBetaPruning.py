@@ -54,10 +54,6 @@ class AlphaBetaPruningStrategy(Strategy):
     
 
     def __evaluateBoard(board: ReversiBoard,player):
-        
-            if(AlphaBetaPruningStrategy.difficulty == "easy"):
-                return board.getScore(maximixingPlayer) - board.getScore(board.getOpponent(maximixingPlayer))
-                
 
             hueristicsObj = heuristics.GameHeuristics()
             coin_parity = hueristicsObj.coinParity(board,maximixingPlayer)
@@ -68,6 +64,8 @@ class AlphaBetaPruningStrategy(Strategy):
             utility = hueristicsObj.utility(board,maximixingPlayer)
             
             combinedHeuristic = hueristicsObj.combinedHeuristics(board,maximixingPlayer)
+
+
             
             if(utility > 100 or utility < -100):
                 raise Exception("Utility is greater than 100 or less than -100")
@@ -268,13 +266,3 @@ class AlphaBetaPruningStrategy(Strategy):
         
     
     ##############################################################################################################################
-    
-    # Method Name: getDifficulty
-    def getDifficulty():
-        return AlphaBetaPruningStrategy.difficulty
-    
-    # Method Name: setDifficulty
-    
-    def setDifficulty(difficulty):
-        AlphaBetaPruningStrategy.difficulty = difficulty
-    
