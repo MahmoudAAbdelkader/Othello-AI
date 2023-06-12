@@ -74,9 +74,9 @@ The heuristics function is a collection of more than one heuristic that mainly c
 
 The heuristics used respectively according to weights: 
 
-1. Mobility
-2. Coin Parity
-3. Corners Captured
+1. Corners Captured
+2. Mobility
+3. Coin Parity
 4. Stability
 
 ## The GUI
