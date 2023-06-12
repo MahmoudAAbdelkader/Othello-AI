@@ -13,6 +13,8 @@ maximixingPlayer = None
 from board import ReversiBoard
 
 class Strategy:
+    
+    
     def __init__(self):
         
         pass

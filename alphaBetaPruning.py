@@ -33,6 +33,8 @@ maximixingPlayer = None
 
 class AlphaBetaPruningStrategy(Strategy):
     
+    difficulty = None
+    
     
     ##############################################################################################################################    
     
@@ -52,9 +54,11 @@ class AlphaBetaPruningStrategy(Strategy):
     
 
     def __evaluateBoard(board: ReversiBoard,player):
-            # print("Board to Evaluate: ")
-           # time.sleep(5)
-           #  board.print()
+        
+            if(AlphaBetaPruningStrategy.difficulty == "easy"):
+                return board.getScore(maximixingPlayer) - board.getScore(board.getOpponent(maximixingPlayer))
+                
+
             hueristicsObj = heuristics.GameHeuristics()
             coin_parity = hueristicsObj.coinParity(board,maximixingPlayer)
             
@@ -64,14 +68,6 @@ class AlphaBetaPruningStrategy(Strategy):
             utility = hueristicsObj.utility(board,maximixingPlayer)
             
             combinedHeuristic = hueristicsObj.combinedHeuristics(board,maximixingPlayer)
-
-            # print(f"Coin Parity = {coin_parity}")
-            # print("stability = ",stability)
-            # print(f"Mobility = {mobility}")
-            # print(f"Corners Captured = {cornersCaptured}")
-            # print(f"Utility = {utility}")
-            # print(f"Combined Heuristic = {combinedHeuristic}")
-           # time.sleep(5)
             
             if(utility > 100 or utility < -100):
                 raise Exception("Utility is greater than 100 or less than -100")
@@ -114,9 +110,9 @@ class AlphaBetaPruningStrategy(Strategy):
     def getBestMove(boardToGetBestMove : ReversiBoard,player,depth):
         
         global maximixingPlayer
-        print(f"Maximizing Player = {maximixingPlayer}")
+        # print(f"Maximizing Player = {maximixingPlayer}")
         maximixingPlayer = player
-        print(f"Maximizing Player = {maximixingPlayer}")
+        # print(f"Maximizing Player = {maximixingPlayer}")
         # super().getBestMove(boardToGetBestMove,player,depth)
         
         # If the game is over, then return None.
@@ -269,5 +265,16 @@ class AlphaBetaPruningStrategy(Strategy):
         
         
         
+        
     
     ##############################################################################################################################
+    
+    # Method Name: getDifficulty
+    def getDifficulty():
+        return AlphaBetaPruningStrategy.difficulty
+    
+    # Method Name: setDifficulty
+    
+    def setDifficulty(difficulty):
+        AlphaBetaPruningStrategy.difficulty = difficulty
+    

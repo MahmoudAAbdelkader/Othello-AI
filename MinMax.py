@@ -25,6 +25,7 @@ import time
 maximixingPlayer = None
 
 class MinMaxStrategy(Strategy):
+    difficulty = None
 
 
     ##############################################################################################################################    
@@ -44,6 +45,10 @@ class MinMaxStrategy(Strategy):
     ##############################################################################################################################   
 
     def evaluateBoard(board: ReversiBoard,player):
+        
+        if(MinMaxStrategy.difficulty == "easy"):
+            return board.getScore(maximixingPlayer) - board.getScore(board.getOpponent(maximixingPlayer))
+        
         hueristicsObj = heuristics.GameHeuristics()
         coin_parity = hueristicsObj.coinParity(board,maximixingPlayer)
         
