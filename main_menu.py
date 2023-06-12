@@ -7,6 +7,17 @@ class MainMenu:
         self.menu = None
         self.difficulty_selector = None
 
+    def on_game_mode_selected(self, _, value):
+        
+        # set game mode
+        self.game_object.set_game_mode(value)
+        
+        # hide difficulty selector if game mode is VS Player
+        if value == 'VS Player':
+            self.difficulty_selector.hide()
+        else:
+            self.difficulty_selector.show()
+
     def show_welcome_screen(self):
         self.menu = pygame_menu.Menu(
             'Welcome to Othello!',
@@ -37,17 +48,3 @@ class MainMenu:
                         font_size=self.font_size)
 
         self.menu.mainloop(self.game_object.screen)
-
-    def on_game_mode_selected(self, _, value):
-        
-        # set game mode
-        self.game_object.set_game_mode(value)
-        
-        # hide difficulty selector if game mode is VS Player
-        if value == 'VS Player':
-            self.difficulty_selector.hide()
-        else:
-            self.difficulty_selector.show()
-        
-        
-
